@@ -16,7 +16,7 @@ export default function Meeting() {
 	}, []);
 
 	async function fetchData() {
-		await axios.get("https://632e-2804-d55-48b8-5200-dfcd-929-4ae7-4b45.ngrok-free.app/projects/1", { headers: {"User-Agent": "firefox"}}).then((res) => {
+		await axios.get("https://632e-2804-d55-48b8-5200-dfcd-929-4ae7-4b45.ngrok-free.app/projects/1", { headers: {"ngrok-skip-browser-warning": "1"}}).then((res) => {
 			const list: ListInferface[] = [];
 
 			list.push({
