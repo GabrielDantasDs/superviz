@@ -1,7 +1,5 @@
-
-export default class Task {
+export default class Tag {
     public title: string;
-    public completed: boolean = false;
 
     constructor(title: string) {
         this.title = title

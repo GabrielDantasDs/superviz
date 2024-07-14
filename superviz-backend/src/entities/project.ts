@@ -1,8 +1,9 @@
+import Card from "./card";
 
 
-class Project {
-    private name: string;
-    private cards: Card[] = [];
+export default class Project {
+    public name: string;
+    public cards: Card[] = [];
 
     constructor(name: string) {
         this.name = name
