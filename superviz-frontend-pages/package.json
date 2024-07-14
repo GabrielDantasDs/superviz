@@ -11,6 +11,7 @@
 	"dependencies": {
 		"@reduxjs/toolkit": "^2.2.6",
 		"@superviz/react-sdk": "^1.9.1",
+		"@vercel/toolbar": "^0.1.15",
 		"axios": "^1.7.2",
 		"next": "^14.2.5",
 		"react": "^18",

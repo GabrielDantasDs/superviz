@@ -16,7 +16,7 @@ export default function Meeting() {
 	}, []);
 
 	async function fetchData() {
-		await axios.get("http://localhost:8000/projects/1").then((res) => {
+		await axios.get("https://632e-2804-d55-48b8-5200-dfcd-929-4ae7-4b45.ngrok-free.app/projects/1", { headers: {"User-Agent": "firefox"}}).then((res) => {
 			const list: ListInferface[] = [];
 
 			list.push({
@@ -41,7 +41,10 @@ export default function Meeting() {
 		<Providers>
 			<main className="flex min-h-screen flex-col items-center justify-between p-24 bg-gray-100">
 				<div className="container mx-auto px-4 py-8">
-					<List lists={lists} />
+					{lists.length > 0 ?
+										<List lists={lists} />
+					: null
+					}
 				</div>
 			</main>
 		</Providers>

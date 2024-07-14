@@ -26,7 +26,7 @@ const useFetchParticipant = () => {
 
 		if (name) {
 			axios
-				.post("http://localhost:8000/participants", { name: name })
+				.post("https://632e-2804-d55-48b8-5200-dfcd-929-4ae7-4b45.ngrok-free.app/participants", { name: name })
 				.then((res) => {
 					dispatch(
 						setParticipant({ id: res.data.id.toString(), name: res.data.name })
