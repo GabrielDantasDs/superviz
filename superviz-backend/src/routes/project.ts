@@ -8,6 +8,7 @@ const router = express.Router();
 const projectController = new ProjectController();
 
 router.post("/", projectController.store);
+router.get("/", projectController.getAll);
 router.get("/:id", projectController.get)
 router.post("/card", projectController.addCard);
 

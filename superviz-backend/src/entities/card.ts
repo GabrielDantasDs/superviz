@@ -3,12 +3,13 @@ import Task from "./task";
 
 export default class Card {
     public title: string;
+    public content?: string;
     public tasks: Task[] = [];
     public tags: Tag[] = [];
-    public list: string = "BACKLOG";
 
-    constructor(title: string) {
-        this.title = title
+    constructor(title: string, content?: string) {
+        this.title = title;
+        this.content = content;
     }
 
     addTask(task: Task) {
@@ -17,5 +18,9 @@ export default class Card {
 
     addTag(tag: Tag) {
         this.tags.push(tag)
+    }
+
+    addContent(content: string) {
+        this.content = content;
     }
 }

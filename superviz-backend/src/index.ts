@@ -5,6 +5,9 @@ import cardRouter from './routes/card'
 import taskRouter from './routes/task'
 import tagRouter from './routes/tag'
 import participantRouter from './routes/participant'
+import listRouter from './routes/list'
+import meetingRouter from './routes/meeting';
+
 import cors from 'cors';
 
 const app = express();
@@ -18,6 +21,8 @@ app.use('/cards', cardRouter);
 app.use('/tasks', taskRouter);
 app.use('/tags', tagRouter);
 app.use('/participants', participantRouter);
+app.use('/lists', listRouter);
+app.use('/meetings', meetingRouter);
 
 app.get('/', (req, res) => {res.send('Hello word')});
 

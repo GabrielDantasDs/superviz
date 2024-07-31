@@ -1,7 +1,4 @@
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { Participant } from "./interfaces/types";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
@@ -13,8 +10,15 @@ const SuperVizRoomProvider = dynamic(
 	}
 );
 
-export function Providers({ children }: any, store:any) {
+export function Providers({ children }: any, store: any) {
 	const participant = useSelector((state: RootState) => state.participant);
+	const meeting = useSelector((state: RootState) => state.meeting);
+
+	const onParticipantJoined = (participant: any) => {
+		if (participant.hasOwnProperty("name")) {
+			Swal.fire("Sucesso", `Bem vindo ${participant.name}`, "success");
+		}
+	};
 
 	return (
 		<SuperVizRoomProvider
@@ -24,8 +28,8 @@ export function Providers({ children }: any, store:any) {
 				name: "grupo",
 			}}
 			participant={participant}
-			onParticipantJoined={(participant) => Swal.fire('Olá', `bem vindo a sala ${participant.name}`, 'success')}
-			roomId="1"
+			onParticipantJoined={onParticipantJoined}
+			roomId={meeting.id}
 		>
 			{children}
 		</SuperVizRoomProvider>

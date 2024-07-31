@@ -11,10 +11,12 @@
 	"dependencies": {
 		"@reduxjs/toolkit": "^2.2.6",
 		"@superviz/react-sdk": "^1.9.1",
+		"@types/react-beautiful-dnd": "^13.1.8",
 		"@vercel/toolbar": "^0.1.15",
 		"axios": "^1.7.2",
 		"next": "^14.2.5",
 		"react": "^18",
+		"react-beautiful-dnd": "^13.1.1",
 		"react-dom": "^18",
 		"react-redux": "^9.1.2",
 		"sweetalert2": "^11.12.2"

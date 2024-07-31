@@ -18,9 +18,9 @@ export default class ProjectController {
     }
 
     addCard = (req:any, res: any) => {
-        const card = new Card(req.body.name);
+        const card = new Card(req.body.title, req.body.content);
 
-        this.db.newCard(req.body.id_project, card);
+        this.db.newCard(req.body.id_project, req.body.id_list, card);
 
         return res.status(200).json("Sucesso");
     }
@@ -29,12 +29,7 @@ export default class ProjectController {
         try {
             const project: any = await this.db.getProject(req.params.id);
             const cards: any = await this.db.getCards(project.id);
-            const response: any = {
-                backlog: [],
-                in_progress: [],
-                done: [],
-                deployed: []
-            }
+            const lists: any = await this.db.getLists(project.id);
 
             const _cards = await Promise.all(cards.map(async (card: any) => {
                 const tasks: any = await this.db.getTasks(card.id);
@@ -46,29 +41,36 @@ export default class ProjectController {
                 return card;
             }))
 
-            _cards.map(card => {
-                switch (card.list) {
-                    case "BACKLOG":
-                        response.backlog.push(card);
-                        break;
-                    case "INPROGRESS": 
-                        response.in_progress.push(card);
-                        break;
-                    case "DONE": 
-                        response.done.push(card);
-                    case "DEPLOYED":
-                        response.deployed.push(card);
-                }
+            lists.map((list: any) => {
+                list.cards = [];
+                
+                _cards.map((card) => {
+                    if (card.id_list == list.id) {
+                        list.cards.push(card);
+                    }
+                });
             });
 
-            if (response) {
-                return res.status(200).json(response);
+
+            project.lists = lists;
+
+            if (project) {
+                return res.status(200).json(project);
             } else {
                 return res.status(404).json('Projeto não encontrada');
             }
         } catch (err) {
             console.error('Erro ao buscar projeto:', err);
             return res.status(500).json('Erro interno ao buscar projeto');
+        }
+    }
+
+    getAll = async (req:any, res:any) => {
+        try {
+            const response = await this.db.getProjects()
+            return res.status(200).json(response)
+        } catch (err) {
+            return res.status(404).json("Projetos não encontrados");
         }
     }
 }
