@@ -6,11 +6,7 @@ import axios from "axios";
 
 const useFetchParticipant = () => {
 	const dispatch = useDispatch();
-
-	useEffect(() => {
-		fetchData();
-	}, [dispatch]);
-
+	
 	const fetchData = async () => {
 		const { value: name } = await Swal.fire({
 			title: "Enter your name",

@@ -7,16 +7,17 @@ export interface Task {
 // Define o tipo para o card
 export interface Card {
 	id: number | string,
-	index?: number;
-	title: string;
-	content: string;
-	tags: Tag[];
-	tasks: Task[];
+	position: number,
+	title: string,
+	id_list: string | number,
+	content: string,
+	tags: Tag[],
+	tasks: Task[],
 }
 
 export interface List {
 	id: number | string,
-	index:number,
+	position: number,
 	header: Header;
 	cards: Card[];
 }

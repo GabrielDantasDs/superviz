@@ -2,6 +2,8 @@ import dynamic from "next/dynamic";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
+import { MousePointers, WhoIsOnline } from "@superviz/react-sdk";
+import Wrapper from "./components/Wrapper";
 
 const SuperVizRoomProvider = dynamic(
 	() => import("@superviz/react-sdk").then((mod) => mod.SuperVizRoomProvider),
@@ -31,6 +33,9 @@ export function Providers({ children }: any, store: any) {
 			onParticipantJoined={onParticipantJoined}
 			roomId={meeting.id}
 		>
+			<WhoIsOnline position="top-left" />
+			<MousePointers elementId="canva" />
+			<Wrapper />
 			{children}
 		</SuperVizRoomProvider>
 	);

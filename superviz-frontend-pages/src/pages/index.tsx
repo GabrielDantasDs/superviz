@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import useFetchParticipant from './useFetchParticipant';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../redux/store';
 import { useRouter } from 'next/navigation';

@@ -7,6 +7,6 @@ dotenv.config();
 const router = express.Router();
 const taskController = new TaskController();
 
-router.post("/:id", taskController.setTaskCompleted);
+router.put("/:id", taskController.setTaskCompleted);
 
 export default router;

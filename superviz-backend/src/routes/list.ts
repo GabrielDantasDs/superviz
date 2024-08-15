@@ -9,5 +9,7 @@ const listController = new ListController();
 
 router.post("/", listController.create);
 router.get("/", listController.getAll);
+router.patch("/rename/:id", listController.rename)
+router.patch("/reorder", listController.reorder)
 
 export default router;

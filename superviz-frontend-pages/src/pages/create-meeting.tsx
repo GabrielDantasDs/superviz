@@ -1,4 +1,5 @@
 import ModalParticipant from "@/components/ModalParticipant";
+import ModalProject from "@/components/ModalProject";
 import { Project } from "@/interfaces/types";
 import { setMeeting } from "@/redux/meetingSlice";
 import { RootState } from "@/redux/store";
@@ -11,8 +12,11 @@ export default function CreateMeeting() {
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [step, setStep] = useState(1);
 	const [title, setTitle] = useState<string>("");
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const meeting = useSelector((state:RootState) => state.meeting)
+
+	const [isParticipantModalOpen, setIsParticipantModalOpen] = useState(false);
+	const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+
+	const meeting = useSelector((state: RootState) => state.meeting);
 	const participant = useSelector((state: RootState) => state.participant);
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -48,7 +52,10 @@ export default function CreateMeeting() {
 	const handleJoinMeeting = async () => {
 		if (selectedProject !== null) {
 			await axios
-				.post("http://localhost:8000/meetings", { title: title, id_project: selectedProject })
+				.post("http://localhost:8000/meetings", {
+					title: title,
+					id_project: selectedProject,
+				})
 				.then((res) => {
 					dispatch(
 						setMeeting({
@@ -58,18 +65,26 @@ export default function CreateMeeting() {
 					);
 
 					if (!participant.id) {
-						setIsModalOpen(true);
+						setIsParticipantModalOpen(true);
 					} else {
-						router.push(`/meeting/${res.data.id}`)
+						router.push(`/meeting/${res.data.id}`);
 					}
 				});
 		}
 	};
 
-	const handleModalSubmit = async (name: string, email: string) => {
+	const handleParticipantModalSubmit = async (name: string, email: string) => {
 		if (name && email) {
-			router.push(`/meeting/${meeting.id}`)
+			router.push(`/meeting/${meeting.id}`);
 		}
+	};
+
+	const handleProjectModalSubmit = async (project: Project) => {
+		const aux = projects;
+
+		aux.push(project);
+
+		setProjects([...projects]);
 	};
 
 	const handleNextStep = () => {
@@ -116,22 +131,44 @@ export default function CreateMeeting() {
 								</div>
 							))}
 						</div>
-						<button
-							onClick={handleNextStep}
-							disabled={selectedProject === null}
-							className={`mt-8 bg-purple-800 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 ${
-								selectedProject === null
-									? "opacity-50 cursor-not-allowed"
-									: "hover:bg-purple-700"
-							}`}
-						>
-							Crie uma nova reunião agora
-						</button>
+						<div>
+							<div className="block">
+								<button
+									onClick={handleNextStep}
+									disabled={selectedProject === null}
+									className={`mt-8 bg-purple-800 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 ${
+										selectedProject === null
+											? "opacity-50 cursor-not-allowed"
+											: "hover:bg-purple-700"
+									}`}
+								>
+									Crie uma nova reunião agora
+								</button>
+							</div>
+							<div className="block">
+								<button
+									onClick={(e) => setIsProjectModalOpen(true)}
+									disabled={selectedProject === null}
+									className={`mt-8 bg-purple-400 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 ${
+										selectedProject === null
+											? "opacity-50 cursor-not-allowed"
+											: "hover:bg-purple-700"
+									}`}
+								>
+									Crie um novo projeto
+								</button>
+							</div>
+						</div>
 					</div>
+					<ModalProject
+						isOpen={isProjectModalOpen}
+						onClose={() => setIsProjectModalOpen(false)}
+						onSubmit={handleProjectModalSubmit}
+					/>
 					<ModalParticipant
-						isOpen={isModalOpen}
-						onClose={() => setIsModalOpen(false)}
-						onSubmit={handleModalSubmit}
+						isOpen={isParticipantModalOpen}
+						onClose={() => setIsParticipantModalOpen(false)}
+						onSubmit={handleParticipantModalSubmit}
 					/>
 				</div>
 			) : (
@@ -172,10 +209,15 @@ export default function CreateMeeting() {
 							Voltar
 						</button>
 					</div>
+					<ModalProject
+						isOpen={isProjectModalOpen}
+						onClose={() => setIsProjectModalOpen(false)}
+						onSubmit={handleProjectModalSubmit}
+					/>
 					<ModalParticipant
-						isOpen={isModalOpen}
-						onClose={() => setIsModalOpen(false)}
-						onSubmit={handleModalSubmit}
+						isOpen={isParticipantModalOpen}
+						onClose={() => setIsParticipantModalOpen(false)}
+						onSubmit={handleParticipantModalSubmit}
 					/>
 				</div>
 			)}

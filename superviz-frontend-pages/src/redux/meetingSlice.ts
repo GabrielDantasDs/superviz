@@ -1,20 +1,41 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface ParticipantState {
-  id: string;
-  title: string;
+
+const getInitialState = (): MeetingState => {
+  let initialId = '';
+  let initialTitle = '';
+  let initialProjectId = '';
+
+  if (typeof window !== 'undefined') {
+    initialId = localStorage.getItem('meeting_id') ?? '';
+    initialTitle = localStorage.getItem('meeting_title') ?? '';
+    initialProjectId = localStorage.getItem('project_id') ?? '';
+  }
+
+  return {
+    id: initialId,
+    title: initialTitle,
+    id_project: initialProjectId
+  };
 }
 
-const initialState: ParticipantState = {
+interface MeetingState {
+  id: string;
+  title: string;
+  id_project: string | number;
+}
+
+const initialState: MeetingState = {
   id: '',
   title: '',
+  id_project: ''
 };
 
 const meetingSlice = createSlice({
   name: 'meeting',
-  initialState,
+  initialState: getInitialState,
   reducers: {
-    setMeeting: (state, action: PayloadAction<ParticipantState>) => {
+    setMeeting: (state, action: PayloadAction<MeetingState>) => {
       state.id = action.payload.id;
       state.title = action.payload.title;
     },

@@ -5,7 +5,7 @@ export default function Wrapper() {
 	return (
 		<>
 			<Realtime />
-			{/* <Event /> */}
+			<Event />
 		</>
 	);
 }

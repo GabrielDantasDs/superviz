@@ -1,11 +1,21 @@
 import ModalParticipant from "@/components/ModalParticipant";
 import { Meeting } from "@/interfaces/types";
+import { RootState } from "@/redux/store";
+import {get} from "@/api/project";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setMeeting } from "@/redux/meetingSlice";
+import { setProject } from "@/redux/projectSlice";
 
 export default function JoinMeeting() {
 	const [meetings, setMeetings] = useState<Meeting[]>([]);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const participant = useSelector((state: RootState) => state.participant);
+	const dispatch = useDispatch();
+	const router = useRouter();
 
 	useEffect(() => {
 		fetchData();
@@ -35,18 +45,43 @@ export default function JoinMeeting() {
 		setSelectedMeeting(id);
 	};
 
-	const handleJoinMeeting = () => {
+	const handleJoinMeeting = async () => {
 		if (selectedMeeting !== null) {
 			if (selectedMeeting !== null) {
-				setIsModalOpen(true);
+				await axios
+				.get(`http://localhost:8000/meetings/${selectedMeeting}`)
+				.then(async (res) => {
+					dispatch(
+						setMeeting({
+							id: res.data.id.toString(),
+							title: res.data.title,
+							id_project: res.data.id_project
+						})
+					);
+
+					localStorage.setItem('meeting_id', res.data.id.toString());
+					localStorage.setItem('meeting_title', res.data.title);
+
+					if (!participant.id) {
+						setIsModalOpen(true);
+					} else {
+						router.push(`/meeting/${res.data.id}`)
+					}
+				});
+
+				if (!participant.id) {
+					setIsModalOpen(true);
+				} else {
+					router.push(`/meeting/${selectedMeeting}`)
+				}
 			}
 		}
 	};
 
-	const handleModalSubmit = (name: string, email: string) => {
-		console.log(
-			`Joining meeting ID: ${selectedMeeting} with name: ${name} and email: ${email}`
-		);
+	const handleModalSubmit = async (name: string, email: string) => {
+		if (name && email) {
+			router.push(`/meeting/${selectedMeeting}`)
+		}
 	};
 
 	return (
