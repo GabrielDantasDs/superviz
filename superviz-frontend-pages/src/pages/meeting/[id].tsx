@@ -36,6 +36,7 @@ export default function Meeting() {
 	const dispatch = useDispatch();
 	const project = useSelector((state: RootState) => state.project);
 	const meeting = useSelector((state: RootState) => state.meeting);
+	const participant = useSelector((state: RootState) => state.participant);
 
 	useEffect(() => {
 		fetchData().then((res) => {
@@ -52,9 +53,14 @@ export default function Meeting() {
 			});
 
 			dispatch(setLists(lists_aux));
-			setLoading(false);
 		});
 	}, []);
+
+	useEffect(() => {
+		if (participant.joined) {
+			setLoading(false);
+		}
+	}, [participant])
 
 	async function fetchData() {
 		const aux = await get(meeting.id_project);
@@ -218,9 +224,8 @@ export default function Meeting() {
 	};
 
 	return (
-		<>
-			{loading ? null : (
-				<Providers>
+		<Providers>
+			{loading ? <Loading/> : (
 					<main
 						data-superviz-id="1"
 						className="flex overflow-auto min-h-screen flex-col items-center justify-between p-24 bg-gray-100"
@@ -257,8 +262,7 @@ export default function Meeting() {
 							</DragDropContext>
 						</div>
 					</main>
-				</Providers>
 			)}
-		</>
+		</Providers>
 	);
 }

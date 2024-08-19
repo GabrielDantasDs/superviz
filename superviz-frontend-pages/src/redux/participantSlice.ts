@@ -5,7 +5,8 @@ interface ParticipantState {
   id: string;
   name: string;
   id_meeting?: string,
-  isHost: true
+  isHost: boolean,
+  joined: boolean
 }
 
 const getInitialState = (): ParticipantState => {
@@ -23,7 +24,8 @@ const getInitialState = (): ParticipantState => {
     id: initialId,
     name: initialName,
     id_meeting: initialIdMeeting,
-    isHost: true
+    isHost: true,
+    joined: false
   };
 }
 
@@ -35,8 +37,15 @@ const participantSlice = createSlice({
       state.id = action.payload.id;
       state.name = action.payload.name;
     },
+    joinMeeting: (state) => {
+      state.joined = true;
+    },
+    leftMeeting: (state) => {
+      state.joined = false;
+    }
   },
 });
 
-export const { setParticipant } = participantSlice.actions;
+export const { setParticipant, joinMeeting, leftMeeting } = participantSlice.actions;
+
 export default participantSlice.reducer;

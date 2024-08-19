@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { MousePointers, WhoIsOnline } from "@superviz/react-sdk";
 import Wrapper from "./components/Wrapper";
+import { useDispatch } from "react-redux";
+import { joinMeeting, leftMeeting } from "./redux/participantSlice";
 
 const SuperVizRoomProvider = dynamic(
 	() => import("@superviz/react-sdk").then((mod) => mod.SuperVizRoomProvider),
@@ -15,22 +17,31 @@ const SuperVizRoomProvider = dynamic(
 export function Providers({ children }: any, store: any) {
 	const participant = useSelector((state: RootState) => state.participant);
 	const meeting = useSelector((state: RootState) => state.meeting);
+	const superviz_key = process.env.NEXT_PUBLIC_SUPERVIZ_KEY ?? "";
+	const dispatch = useDispatch();
 
-	const onParticipantJoined = (participant: any) => {
+	const onParticipantLocalJoined = (participant: any) => {
+		console.log('teste')
 		if (participant.hasOwnProperty("name")) {
 			Swal.fire("Sucesso", `Bem vindo ${participant.name}`, "success");
+			dispatch(joinMeeting());
 		}
+	};
+
+	const onParticipantLocalLeft = (participant: any) => {
+		dispatch(leftMeeting());
 	};
 
 	return (
 		<SuperVizRoomProvider
-			developerKey={"ascut2pz3ubo52i0liftnt1nh1mchj"}
+			developerKey={superviz_key}
 			group={{
 				id: "1",
 				name: "grupo",
 			}}
 			participant={participant}
-			onParticipantJoined={onParticipantJoined}
+			onParticipantLocalJoined={onParticipantLocalJoined}
+			onParticipantLocalLeft={onParticipantLocalLeft}
 			roomId={meeting.id}
 		>
 			<WhoIsOnline position="top-left" />
