@@ -37,11 +37,14 @@ body {
 }
 
 .list {
-  background-color: rgb(245, 218, 248);
   margin: 0px 8px;
   padding: 16px 16px;
 }
 
 .min-height-width {
   min-height: 300px;
+}
+
+.list-title-view {
+  width: 50%;
 }

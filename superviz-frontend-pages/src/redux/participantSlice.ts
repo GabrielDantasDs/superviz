@@ -2,9 +2,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ParticipantState {
-  id: string;
+  id: string | number;
   name: string;
-  id_meeting?: string,
+  id_sprint?: string,
   isHost: boolean,
   joined: boolean
 }
@@ -12,18 +12,18 @@ interface ParticipantState {
 const getInitialState = (): ParticipantState => {
   let initialId = '';
   let initialName = '';
-  let initialIdMeeting = '';
+  let initialIdSprint = '';
 
   if (typeof window !== 'undefined') {
     initialId = localStorage.getItem('id') ?? '';
     initialName = localStorage.getItem('name') ?? '';
-    initialIdMeeting = localStorage.getItem('id_meeting') ?? ''
+    initialIdSprint = localStorage.getItem('id_sprint') ?? ''
   }
 
   return {
     id: initialId,
     name: initialName,
-    id_meeting: initialIdMeeting,
+    id_sprint: initialIdSprint,
     isHost: true,
     joined: false
   };
@@ -37,15 +37,15 @@ const participantSlice = createSlice({
       state.id = action.payload.id;
       state.name = action.payload.name;
     },
-    joinMeeting: (state) => {
+    joinSprint: (state) => {
       state.joined = true;
     },
-    leftMeeting: (state) => {
+    leftSprint: (state) => {
       state.joined = false;
     }
   },
 });
 
-export const { setParticipant, joinMeeting, leftMeeting } = participantSlice.actions;
+export const { setParticipant, joinSprint, leftSprint } = participantSlice.actions;
 
 export default participantSlice.reducer;

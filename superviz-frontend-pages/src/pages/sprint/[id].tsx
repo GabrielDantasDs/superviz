@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useEffect, useState } from "react";
-import { List as ListInterface } from "../../interfaces/types";
+import { Card, CardActivity, List as ListInterface } from "../../interfaces/types";
 import axios from "axios";
 
 import { useSelector } from "react-redux";
@@ -21,27 +21,39 @@ import dynamic from "next/dynamic";
 import { Loading } from "@/components/Loading";
 import { get } from "@/api/project";
 import { reorderCards, reorderLists } from "@/api/lists";
+import { leftSprint as leftSprintAction } from "@/redux/participantSlice";
+import updateListSlice, { setUpdateList } from "@/redux/updateListSlice";
+import { addNewActivity, setCardActivity } from "@/redux/cardActivitySlice";
+import { createCardActivity } from "@/api/card-activity";
+import dayjs from 'dayjs'
+import axiosInstance from "@/axiosInstance";
+
 
 const Providers = dynamic(
 	() => import("@/providers").then((mod) => mod.Providers),
 	{ ssr: false }
 );
 
+const Sidebar = dynamic(
+	() => import("@/components/Sidebar").then((mod) => mod.default),
+	{ ssr: false }
+);
+
 const List = dynamic(() => import("@/components/List"), { ssr: false });
 
-export default function Meeting() {
+export default function Sprint() {
 	const lists = useSelector((state: RootState) => state.lists);
 	const [loading, setLoading] = useState<boolean>(true);
 	const router = useRouter();
 	const dispatch = useDispatch();
 	const project = useSelector((state: RootState) => state.project);
-	const meeting = useSelector((state: RootState) => state.meeting);
+	const sprint = useSelector((state: RootState) => state.sprint);
 	const participant = useSelector((state: RootState) => state.participant);
 
 	useEffect(() => {
 		fetchData().then((res) => {
 			const lists_aux: ListInterface[] = [];
-			console.log(res);
+			const cards_activities_aux: CardActivity[] = []
 
 			res.lists.map((item: any, index: number) => {
 				lists_aux.push({
@@ -52,6 +64,26 @@ export default function Meeting() {
 				});
 			});
 
+			res.cards_activities.map((item:any, index: number) => {
+
+				const source_list: ListInterface | undefined = lists_aux.find(list => list.id == item.source_list_id);
+				const destination_list: ListInterface | undefined = lists_aux.find(list => list.id == item.destination_list_id);
+				if (source_list && destination_list) {
+					const card: Card | undefined = source_list.cards.find(card => card.id == item.id_card);
+
+					cards_activities_aux.push({
+						id: item.id,
+						destination_list: destination_list,
+						destination_position: item.destination_position,
+						source_list: source_list,
+						source_position: item.source_position,
+						card: card,
+						created_at: item.created_at
+					});
+				}
+			});
+
+			dispatch(setCardActivity(cards_activities_aux))
 			dispatch(setLists(lists_aux));
 		});
 	}, []);
@@ -60,16 +92,17 @@ export default function Meeting() {
 		if (participant.joined) {
 			setLoading(false);
 		}
-	}, [participant])
+	}, [participant]);
 
 	async function fetchData() {
-		const aux = await get(meeting.id_project);
+		const aux = await get(sprint.id_project);
 
 		dispatch(
 			setProject({
 				id: aux.id,
 				name: aux.name,
 				lists: aux.lists,
+				cards_activities: aux.cards_activities
 			})
 		);
 
@@ -83,7 +116,7 @@ export default function Meeting() {
 	}
 
 	async function addList() {
-		await axios
+		await axiosInstance
 			.post("http://localhost:8000/lists", {
 				title: "Nova lista",
 				position: lists.length > 0 ? lists.length : 0,
@@ -98,6 +131,7 @@ export default function Meeting() {
 				};
 
 				dispatch(addNewList(list));
+				dispatch(setUpdateList(true));
 			});
 	}
 
@@ -106,7 +140,6 @@ export default function Meeting() {
 			const { destination, source, draggableId } = result;
 
 			if (!destination) {
-				console.log("teste");
 				return;
 			}
 
@@ -148,7 +181,19 @@ export default function Meeting() {
 						);
 				}
 
+				const card_activity:CardActivity = {
+					destination_list: destinationList,
+					destination_position: destination.index,
+					source_list: originList,
+					source_position: source.index,
+					card: movedCard,
+					created_at: dayjs().format('YYYY-MM-DD HH:mm')
+				};
+
 				reorderCards(originList.cards);
+				dispatch(setUpdateList(true))
+				createCardActivity({ destination_list_id: destinationList?.id, destination_position: destination.index, source_position: source.index, source_list_id: originList.id, id_card: movedCard?.id });
+				dispatch(addNewActivity(card_activity))
 			}
 		}
 
@@ -156,7 +201,6 @@ export default function Meeting() {
 			const { destination, source, draggableId } = result;
 
 			if (!destination) {
-				console.log("teste");
 				return;
 			}
 
@@ -186,7 +230,6 @@ export default function Meeting() {
 
 						return item;
 					});
-					console.log(aux);
 				}
 
 				if (destination.index < source.index) {
@@ -210,58 +253,74 @@ export default function Meeting() {
 				);
 
 				aux[index] = list;
-
-				console.log(list)
 			}
 
-			aux = aux.sort((a:ListInterface,b:ListInterface) => a.position - b.position );
+			aux = aux.sort(
+				(a: ListInterface, b: ListInterface) => a.position - b.position
+			);
 
-			console.log(aux)
 			reorderLists(aux);
 
 			dispatch(setLists(aux));
+			dispatch(setUpdateList(true));
 		}
+	};
+
+	const leftSprint = () => {
+		dispatch(leftSprintAction());
+		window.location.href = "/join-sprint";
 	};
 
 	return (
 		<Providers>
-			{loading ? <Loading/> : (
-					<main
-						data-superviz-id="1"
-						className="flex overflow-auto min-h-screen flex-col items-center justify-between p-24 bg-gray-100"
-					>
-						<div className="container mx-auto px-4 py-8 h-screen">
-							<button
-								onClick={addList}
-								className="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 my-3 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
-							>
-								Nova lista
-							</button>
-							<DragDropContext onDragEnd={onDragEnd}>
-								<Droppable
-									droppableId="main"
-									type="COLUMN"
-									direction="horizontal"
-								>
-									{(provided) => (
-										<div
-											className="flex -mx-4 gap-y-8 h-full"
-											ref={provided.innerRef}
-											{...provided.droppableProps}
-										>
-											{lists.map((list) => (
-												<List
-													data={list}
-													handleDragDrop={onDragEnd}
-												/>
-											))}
-											{provided.placeholder}
-										</div>
-									)}
-								</Droppable>
-							</DragDropContext>
+			{loading ? (
+				<Loading />
+			) : (
+				<main
+					data-superviz-id="1"
+					className="flex overflow-auto min-h-screen flex-col items-center justify-center p-24 bg-gray-100"
+				>
+					<Sidebar />
+					<div id="canva" className="container mx-auto px-4 py-8 h-screen">
+						<div className="w-full m-auto text-center flex flex-row justify-center">
+							<span className="text-5xl font-extrabold text-purple-700">
+								{project.name} - {sprint.title}
+							</span>
 						</div>
-					</main>
+						<button onClick={leftSprint} className="bg-red-700 hover:bg-red-600 text-white font-bold py-3 my-3 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+							Sair
+						</button>
+						<button
+							onClick={addList}
+							className="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 my-3 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
+						>
+							Nova lista
+						</button>
+						<DragDropContext onDragEnd={onDragEnd}>
+							<Droppable
+								droppableId="main"
+								type="COLUMN"
+								direction="horizontal"
+							>
+								{(provided) => (
+									<div
+										className="flex -mx-4 gap-8 h-full"
+										ref={provided.innerRef}
+										{...provided.droppableProps}
+									>
+										{lists.map((list) => (
+											<List
+												data={list}
+												handleDragDrop={onDragEnd}
+											/>
+										))}
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
+						</DragDropContext>
+					</div>
+				</main>
 			)}
 		</Providers>
 	);

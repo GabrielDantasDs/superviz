@@ -12,7 +12,7 @@ export default class ParticipantController {
 
     get = async (req: any, res: any) => {
         try {
-            const participant = new Participant(req.body.name, req.body.email, req.body.id_meeting, req.body.host);
+            const participant = new Participant(req.body.name, req.body.email, req.body.id_sprint, req.body.host);
 
             const response: any = await this.db.newParticipant(participant);
 

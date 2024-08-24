@@ -3,6 +3,7 @@
 import axios from "axios";
 import React from "react";
 import { Project } from "@/interfaces/types";
+import axiosInstance from "@/axiosInstance";
 
 interface ModalProps {
 	isOpen: boolean;
@@ -18,7 +19,7 @@ export default function ModalProject({
 	const [name, setName] = React.useState("");
 
 	const handleSubmit = async () => {
-		await axios
+		await axiosInstance 
 			.post("http://localhost:8000/projects", {
 				name: name,
 			}).then(res => 	{

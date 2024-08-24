@@ -27,7 +27,7 @@ export default function Event() {
 
 	const getData = (data: any) => {
 		if (data.participantId !== localStorage.getItem("id")) {
-			dispatch(setLists(data.data));
+			dispatch(setLists(data.data.slice()));
 		}
 
 		dispatch(setUpdateList(false));

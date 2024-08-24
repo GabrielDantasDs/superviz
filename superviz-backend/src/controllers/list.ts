@@ -1,59 +1,70 @@
-import Database from "../database/queries";
+import ListRepository from "../database/repositories/list";
+import { SQLiteResult } from "../types";
 
 export default class ListController {
-    public db: Database;
+  private listRepository: ListRepository;
 
-    constructor() {
-        this.db = new Database();
+  constructor() {
+    this.listRepository = new ListRepository();
+  }
+
+  create = async (req: any, res: any) => {
+    try {
+      const list: SQLiteResult = await this.listRepository.createList(req.body.title, req.body.position, req.body.id_project);
+      return res.status(200).json(list);
+    } catch (error) {
+      console.error('Erro ao criar a lista:', error);
+      return res.status(500).json("Houve um erro ao criar a lista.");
     }
+  };
 
-    create = async (req:any, res:any) => {
-        const list = await this.db.createList(req.body.title, req.body.position, req.body.id_project);
+//   update = async (req: any, res: any) => {
+//     try {
+//       const list: SQLiteResult = await this.listRepository.updateList(req.body.title, req.body.id_list);
+//       return res.status(200).json("Sucesso");
+//     } catch (error) {
+//       console.error('Erro ao atualizar a lista:', error);
+//       return res.status(500).json("Houve um erro ao editar a lista.");
+//     }
+//   };
 
-        if (list) {
-            return res.status(200).json(list)
-        } else {
-            return res.status(500).json("Houve um erro ao criar a lista.");
-        }
+  getAll = async (req: any, res: any) => {
+    try {
+      const lists: SQLiteResult[] = await this.listRepository.getLists(req.body.id_project);
+      return res.status(200).json(lists);
+    } catch (error) {
+      console.error('Erro ao obter as listas:', error);
+      return res.status(404).json("Nehuma lista encontrada");
     }
+  };
 
-    update = async (req: any, res: any) => {
-        const list = await this.db.updateList(req.body.title, res.body.id_list);
-
-        if (list) {
-            return res.status(200).json("Sucesso")
-        } else {
-            return res.status(500).json("Houve um erro ao editar a lista.");
-        }
+  rename = async (req: any, res: any) => {
+    try {
+      const list: SQLiteResult = await this.listRepository.renameList(req.params.id, req.body.title);
+      return res.status(200).json(list);
+    } catch (error) {
+      console.error('Erro ao renomear a lista:', error);
+      return res.status(404).json("Nenhum lista encontrada");
     }
+  };
 
-    getAll = async (req: any, res: any) => {
-        const lists = await this.db.getLists(req.body.id_project);
-
-        if (lists) {
-            return res.status(200).json(lists);
-        } else {
-            return res.status(404).json("Nehuma lista encontrada");
-        }
+  reorder = async (req: any, res: any) => {
+    try {
+      await this.listRepository.reorderLists(req.body);
+      return res.status(200).json("Sucesso");
+    } catch (error) {
+      console.error('Erro ao reordenar as listas:', error);
+      return res.status(500).json("Erro interno ao reordenar as listas");
     }
+  };
 
-    rename = async (req:any, res:any) => {
-        const list = await this.db.renameList(req.params.id, req.body.title);
-
-        if (list) {
-            return res.status(200).json(list);
-        } else {
-            return res.status(404).json("Nenhum lista encontrada");
-        }
+  remove = async (req: any, res: any) => {
+    try {
+      await this.listRepository.removeList(req.params.id);
+      return res.status(200).json("Sucesso");
+    } catch (error) {
+      console.error('Erro ao reordenar as listas', error);
+      return res.status(500).json("Erro interno ao remover a lista");
     }
-
-    reorder = (req: any, res: any) => {
-		try {
-			const response = this.db.reorderLists(req.body);
-
-			return res.status(200).json("Sucesso");
-		} catch (err) {
-			return res.status(404).json(err);
-		}
-	};
+  }
 }

@@ -1,9 +1,9 @@
 
 
-export default class Meeting {
+export default class Sprint {
     private title: string;
-    public init_date: Date = new Date();
-    public end_date?: Date;
+    public start_at: Date = new Date();
+    public ended_at?: Date;
 
     constructor(title: string) {
         this.title = title;

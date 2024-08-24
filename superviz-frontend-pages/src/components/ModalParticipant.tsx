@@ -6,6 +6,7 @@ import React from "react";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import axiosInstance from "@/axiosInstance";
 
 interface ModalProps {
 	isOpen: boolean;
@@ -22,21 +23,21 @@ export default function ModalParticipant({
 
 	const [name, setName] = React.useState("");
 	const [email, setEmail] = React.useState("");
-	const meeting = useSelector((state: RootState) => state.meeting);
+	const sprint = useSelector((state: RootState) => state.sprint);
 
 	const handleSubmit = async () => {
-		await axios
+		await axiosInstance
 			.post("http://localhost:8000/participants", {
 				name: name,
 				email: email,
-				id_meeting: meeting.id,
+				id_sprint: sprint.id,
 			})
 			.then((res) => {
 				dispatch(
 					setParticipant({
 						id: res.data.id.toString(),
 						name: res.data.name,
-						id_meeting: meeting.id,
+						id_sprint: sprint.id,
 						isHost: true,
 					})
 				);

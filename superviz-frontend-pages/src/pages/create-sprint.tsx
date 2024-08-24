@@ -1,14 +1,16 @@
+import axiosInstance from "@/axiosInstance";
 import ModalParticipant from "@/components/ModalParticipant";
 import ModalProject from "@/components/ModalProject";
 import { Project } from "@/interfaces/types";
-import { setMeeting } from "@/redux/meetingSlice";
+import { setParticipant } from "@/redux/participantSlice";
+import { setSprint } from "@/redux/sprintSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-export default function CreateMeeting() {
+export default function CreateSprint() {
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [step, setStep] = useState(1);
 	const [title, setTitle] = useState<string>("");
@@ -16,10 +18,11 @@ export default function CreateMeeting() {
 	const [isParticipantModalOpen, setIsParticipantModalOpen] = useState(false);
 	const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
 
-	const meeting = useSelector((state: RootState) => state.meeting);
+	const sprint = useSelector((state: RootState) => state.sprint);
 	const participant = useSelector((state: RootState) => state.participant);
 	const dispatch = useDispatch();
 	const router = useRouter();
+	const user = useSelector((state: RootState) => state.user);
 
 	const [selectedProject, setSelectedProject] = useState<
 		number | string | undefined
@@ -30,7 +33,7 @@ export default function CreateMeeting() {
 	}, []);
 
 	async function fetchData() {
-		await axios
+		await axiosInstance
 			.get("http://localhost:8000/projects", {
 				headers: { "ngrok-skip-browser-warning": "1" },
 			})
@@ -49,25 +52,26 @@ export default function CreateMeeting() {
 		setSelectedProject(id);
 	};
 
-	const handleJoinMeeting = async () => {
+	const handleJoinSprint = async () => {
 		if (selectedProject !== null) {
-			await axios
-				.post("http://localhost:8000/meetings", {
+			await axiosInstance
+				.post("http://localhost:8000/sprints", {
 					title: title,
 					id_project: selectedProject,
 				})
 				.then((res) => {
 					dispatch(
-						setMeeting({
+						setSprint({
 							id: res.data.id.toString(),
 							title: res.data.title,
+							id_project: res.data.id_project
 						})
 					);
 
 					if (!participant.id) {
-						setIsParticipantModalOpen(true);
+						setParticipant({ id: user.id, isHost: true, joined: true, name: user.name, id_sprint: res.data.id})
 					} else {
-						router.push(`/meeting/${res.data.id}`);
+						router.push(`/sprint/${res.data.id}`);
 					}
 				});
 		}
@@ -75,7 +79,7 @@ export default function CreateMeeting() {
 
 	const handleParticipantModalSubmit = async (name: string, email: string) => {
 		if (name && email) {
-			router.push(`/meeting/${meeting.id}`);
+			router.push(`/sprint/${sprint.id}`);
 		}
 	};
 
@@ -187,7 +191,7 @@ export default function CreateMeeting() {
 							/>
 						</div>
 						<button
-							onClick={handleJoinMeeting}
+							onClick={handleJoinSprint}
 							disabled={selectedProject === null || title === ""}
 							className={`mt-8 bg-purple-800 text-white font-bold py-2 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105 ${
 								selectedProject === null

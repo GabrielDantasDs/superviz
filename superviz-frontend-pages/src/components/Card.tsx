@@ -7,6 +7,10 @@ import Cards from "./Cards";
 import { Draggable } from "@hello-pangea/dnd";
 import ModalCard from "./ModalCard";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUpdateList } from "@/redux/updateListSlice";
+import { updateCard as updateCardAction } from "@/redux/listsSlice";
+import axiosInstance from "@/axiosInstance";
 
 interface Task {
 	id: number;
@@ -14,45 +18,16 @@ interface Task {
 	completed: boolean;
 }
 
-interface CardProps {
-	id: number | string;
-	id_list: number | string;
-	position: number;
-	title: string;
-	content: string;
-	tags: Tag[];
-	tasks: Task[];
-}
 
-const Card: React.FC<CardProps> = ({
-	id,
-	id_list,
-	position,
-	title,
-	content,
-	tags,
-	tasks,
-}) => {
-	const [card, setCard] = useState<CardInterface>({
-		id,
-		id_list,
-		position,
-		title,
-		content,
-		tags,
-		tasks,
-	});
+const Card: React.FC<CardInterface> = (data: CardInterface) => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		setCard({ id, id_list, position, title, content, tags, tasks });
-	}, [id]);
+		setTasks(data.tasks);
+	}, [data.tasks]);
 
-	useEffect(() => {
-		setTasks(card.tasks);
-	}, [card.tasks]);
-
-	const [_tasks, setTasks] = useState<Task[]>(tasks);
+	const [_tasks, setTasks] = useState<Task[]>(data.tasks);
 
 	const handleTaskChange = async (taskIndex: number, completed: boolean) => {
 		let tasks = _tasks;
@@ -62,7 +37,7 @@ const Card: React.FC<CardProps> = ({
 			task.completed = completed;
 			setTasks([...tasks]);
 			
-			await axios
+			await axiosInstance
 				.put(`http://localhost:8000/tasks/${task.id}`, completed, {
 					headers: { "ngrok-skip-browser-warning": "1" },
 				})
@@ -73,9 +48,9 @@ const Card: React.FC<CardProps> = ({
 		}
 	};
 
-	useEffect(() => {
-		setCard({ ...card, tasks: _tasks });
-	}, [_tasks]);
+	// useEffect(() => {
+	// 	setCard({ ...card, tasks: _tasks });
+	// }, [_tasks]);
 
 	const onCloseModal = () => {
 		setIsModalOpen(false);
@@ -87,24 +62,26 @@ const Card: React.FC<CardProps> = ({
 	};
 
 	const updateCard = async (data: CardInterface) => {
-		await axios
+		await axiosInstance
 			.put(`http://localhost:8000/cards/${data.id}`, data, {
 				headers: { "ngrok-skip-browser-warning": "1" },
 			})
 			.then((res) => {
-				setCard({ ...res.data });
+				dispatch(updateCardAction({ card: res.data }))
+
 			});
+			dispatch(setUpdateList(true))
 	};
 
 	return (
 		<>
-			{tasks.length > 0 ? (
+			{data.tasks.length > 0 ? (
 				<FormElements
-					fields={tasks.map((task) => `task-${task.id}`)}
+					fields={data.tasks.map((task) => `task-${task.id}`)}
 				/>
 			) : null}
 
-			<Draggable draggableId={id.toString()} index={position} key={id}>
+			<Draggable draggableId={`card-${data.id.toString()}`} index={data.position} key={data.id}>
 				{(provided, snapshot) => (
 					<div
 						ref={provided.innerRef}
@@ -115,15 +92,15 @@ const Card: React.FC<CardProps> = ({
 						<div onClick={() => setIsModalOpen(true)}>
 							<div className="px-4 py-2">
 								<h2 className="text-xl font-bold text-gray-800">
-									{card.title}
+									{data.title}
 								</h2>
 								<p className="text-gray-600 mt-2">
-									{card.content}
+									{data.content}
 								</p>
 							</div>
 
 							<div className="px-4 py-3 bg-gray-100">
-								{card.tags.map((tag, index) => (
+								{data.tags.map((tag, index) => (
 									<span
 										key={index}
 										className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
@@ -147,7 +124,7 @@ const Card: React.FC<CardProps> = ({
 									>
 										<input
 											type="checkbox"
-											id={`task-${id}`}
+											id={`task-${data.id}`}
 											checked={task.completed}
 											onChange={() =>
 												handleTaskChange(
@@ -175,7 +152,7 @@ const Card: React.FC<CardProps> = ({
 			</Draggable>
 			<ModalCard
 				isOpen={isModalOpen}
-				card={card}
+				card={data}
 				onCloseCallBack={onCloseModal}
 				handleSaveCallBack={handleSaveModal}
 			/>

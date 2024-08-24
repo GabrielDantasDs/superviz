@@ -1,83 +1,89 @@
-import Database from "../database/queries";
-import Card from "../entities/card";
+import ProjectRepository from "../database/repositories/project";
+import CardRepository from "../database/repositories/card";
+import ListRepository from "../database/repositories/list";
+import TaskRepository from "../database/repositories/task";
+import TagRepository from "../database/repositories/tag";
 import Project from "../entities/project";
+import Card from "../entities/card";
+import { SQLiteResult } from "../types";
+import CardActivityRepository from "../database/repositories/cardActivty";
 
 export default class ProjectController {
-	public db: Database;
+  private projectRepository: ProjectRepository;
+  private cardRepository: CardRepository;
+  private listRepository: ListRepository;
+  private taskRepository: TaskRepository;
+  private tagRepository: TagRepository;
+  private cardActivitiesRepository: CardActivityRepository;
 
-	constructor() {
-		this.db = new Database();
-	}
+  constructor() {
+    this.projectRepository = new ProjectRepository();
+    this.cardRepository = new CardRepository();
+    this.listRepository = new ListRepository();
+    this.taskRepository = new TaskRepository();
+    this.tagRepository = new TagRepository();
+    this.cardActivitiesRepository = new CardActivityRepository();
+  }
 
-	store = async (req: any, res: any) => {
-		const project = new Project(req.body.name);
+  store = async (req: any, res: any) => {
+    try {
+      const project = new Project(req.body.name);
+      const response: SQLiteResult = await this.projectRepository.newProject(project);
+      return res.status(200).json(response);
+    } catch (error) {
+      console.error('Erro ao criar o projeto:', error);
+      return res.status(500).json('Erro interno ao criar o projeto');
+    }
+  };
 
-		try {
-			const response = await this.db.newProject(project);
+  addCard = async (req: any, res: any) => {
+    try {
+      const card = new Card(req.body.title, req.body.index, req.body.content);
+      await this.cardRepository.newCard(req.body.id_project, req.body.id_list, card);
+      return res.status(200).json("Sucesso");
+    } catch (error) {
+      console.error('Erro ao criar o card:', error);
+      return res.status(500).json('Erro interno ao criar o card');
+    }
+  };
 
-			return res.status(200).json(response);
-		} catch (err) {
-            return res.status(404).json(err);
-        }
-	};
+  get = async (req: any, res: any) => {
+    try {
+      const project: SQLiteResult = await this.projectRepository.getProject(req.params.id);
+      const cards: SQLiteResult[] = await this.cardRepository.getCards(project.id);
+      const lists: SQLiteResult[] = await this.listRepository.getLists(project.id);
+      const cards_activities: SQLiteResult[] = await this.cardActivitiesRepository.getCardActivityByProject(project.id);
 
-	addCard = (req: any, res: any) => {
-		const card = new Card(req.body.title, req.body.index, req.body.content);
+      const _cards = await Promise.all(
+        cards.map(async (card: SQLiteResult) => {
+          const tasks: SQLiteResult[] = await this.taskRepository.getTasks(card.id);
+          const tags: SQLiteResult[] = await this.tagRepository.getTags(card.id);
+          return { id:card.id, title: card.title, content: card.content, position:card.position, id_list: card.id_list,tasks, tags };
+        })
+      );
 
-		this.db.newCard(req.body.id_project, req.body.id_list, card);
+      lists.forEach((list) => {
+        list.cards = _cards.filter((card) => card.id_list === list.id);
+        list.cards = list.cards.sort((a: Card, b: Card) => a.position > b.position ? 1 : -1);
+      });
 
-		return res.status(200).json("Sucesso");
-	};
+      project.lists = lists;
+      project.cards_activities = cards_activities;
+      return res.status(200).json(project);
+    } catch (error) {
+      console.error('Erro ao buscar o projeto:', error);
+      return res.status(500).json('Erro interno ao buscar o projeto');
+    }
+  };
 
-	get = async (req: any, res: any) => {
-		try {
-			const project: any = await this.db.getProject(req.params.id);
-			const cards: any = await this.db.getCards(project.id);
-			const lists: any = await this.db.getLists(project.id);
+  getAll = async (req: any, res: any) => {
+    try {
+      const response: SQLiteResult[] = await this.projectRepository.getProjects();
 
-			const _cards = await Promise.all(
-				cards.map(async (card: any) => {
-					const tasks: any = await this.db.getTasks(card.id);
-					const tags: any = await this.db.getTags(card.id);
-
-					card.tasks = tasks;
-					card.tags = tags;
-
-					return card;
-				})
-			);
-
-			lists.map((list: any) => {
-				list.cards = [];
-
-				_cards.map((card) => {
-					if (card.id_list == list.id) {
-						list.cards.push(card);
-					}
-				});
-
-				list.cards = list.cards.sort((a:Card,b:Card) => a.position > b.position ? 1 : -1);
-			});
-
-			project.lists = lists;
-
-			if (project) {
-				return res.status(200).json(project);
-			} else {
-				return res.status(404).json("Projeto não encontrada");
-			}
-		} catch (err) {
-			console.error("Erro ao buscar projeto:", err);
-			return res.status(500).json("Erro interno ao buscar projeto");
-		}
-	};
-
-	getAll = async (req: any, res: any) => {
-		try {
-			const response = await this.db.getProjects();
-			return res.status(200).json(response);
-		} catch (err) {
-			return res.status(404).json("Projetos não encontrados");
-		}
-	};
+      return res.status(200).json(response);
+    } catch (error) {
+      console.error('Erro ao buscar os projetos:', error);
+      return res.status(500).json('Erro interno ao buscar os projetos');
+    }
+  };
 }

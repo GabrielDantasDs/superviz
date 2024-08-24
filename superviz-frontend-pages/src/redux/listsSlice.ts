@@ -1,6 +1,7 @@
 import { reorderCards } from "@/api/lists";
 import { Card, List } from "@/interfaces/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { produce } from 'immer';
 import { current, original } from 'immer';
 
 const getInitialState = (): List[] => {
@@ -40,11 +41,16 @@ interface RenameListArgs {
   title: string
 }
 
+interface UpdateCardArgs {
+  card: Card;
+}
+
 const listsSlice = createSlice({
 	name: "lists",
 	initialState: getInitialState,
 	reducers: {
 		setLists: (state, action: PayloadAction<List[]>) => {
+
 			return action.payload;
 		},
 		addCardToList: (state, action: PayloadAction<addCardToListArg>) => {
@@ -141,9 +147,42 @@ const listsSlice = createSlice({
         
         localStorage.setItem('lists', JSON.stringify(state));
       }
+    },
+    updateCard: (state, action: PayloadAction<UpdateCardArgs>) => {
+      const { card } = action.payload;
+      return produce(state, (draft) => {
+        const list = draft.find((l) => l.id === card.id_list);
+        if (list) {
+          const found_card = list.cards.find((c) => c.id === card.id);
+          if (found_card) {
+            found_card.title = card.title;
+            found_card.content = card.content;
+          }
+        }
+      });
+    },
+    removeList: (state, action: PayloadAction<Number | String>) => {
+      const list = state.find((list) => list.id == action.payload);
+
+      let lists = [...state];
+      if (list) {
+        lists.splice(list.position, 1);
+
+				lists = lists.map((item) => {
+					if (item.position > list.position) {
+						return { ...item, position: item.position - 1 };
+					}
+
+					return item;
+				});
+        
+        localStorage.setItem('lists', JSON.stringify(lists));
+
+        return lists;
+      }
     }
 	},
 });
 
-export const { setLists, addCardToList, removeCardFromList, addNewList, renameList } = listsSlice.actions;
+export const { setLists, addCardToList, removeCardFromList, addNewList, renameList, updateCard, removeList } = listsSlice.actions;
 export default listsSlice.reducer;

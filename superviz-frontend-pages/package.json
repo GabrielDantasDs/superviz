@@ -15,6 +15,7 @@
 		"@types/react-beautiful-dnd": "^13.1.8",
 		"@vercel/toolbar": "^0.1.15",
 		"axios": "^1.7.2",
+		"dayjs": "^1.11.13",
 		"next": "^14.2.5",
 		"react": "^18",
 		"react-beautiful-dnd": "^13.1.1",

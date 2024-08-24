@@ -4,7 +4,7 @@ import Card from "../entities/card";
 import Task from "../entities/task";
 import Tag from "../entities/tag";
 import Participant from "../entities/participant";
-import Meeting from "../entities/meeting";
+import Sprint from "../entities/sprint";
 import List from "../entities/list";
 
 export default class Database {
@@ -154,15 +154,15 @@ export default class Database {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
 			email TEXT NOT NULL,
-			id_meeting INTEGER NOT NULL REFERENCES meetings(id),
+			id_sprint INTEGER NOT NULL REFERENCES sprints(id),
 			host INTEGER NOT NULL DEFAULT 0
 			)`);
 
 			db.run(
-				`INSERT INTO participants (name, email, id_meeting, host) VALUES (?, ?, ?, ?)`,
+				`INSERT INTO participants (name, email, id_sprint, host) VALUES (?, ?, ?, ?)`,
 				participant.name,
 				participant.email,
-				participant.id_meeting,
+				participant.id_sprint,
 				participant.host
 			);
 
@@ -415,7 +415,6 @@ export default class Database {
 		return new Promise((resolve, reject) => {
 			db.serialize(() => {
 				lists.forEach((list:List) => {
-					console.log(list)
 					db.run(
 						`UPDATE lists SET position = ? where id = ?`,
 						[list.position, list.id],
@@ -514,17 +513,17 @@ export default class Database {
 		});
 	}
 
-	createMeeting(meeting: Meeting, projectId: number) {
+	createSprint(sprint: Sprint, projectId: number) {
 		const db = new sqlite3.Database("database.sqlite");
 
 		return new Promise((resolve, reject) => {
 			db.serialize(() => {
 				db.run(
-					`CREATE TABLE IF NOT EXISTS meetings (
+					`CREATE TABLE IF NOT EXISTS sprints (
 					id INTEGER PRIMARY KEY AUTOINCREMENT,
 					title TEXT NOT NULL,
-					created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-					closed_at TIMESTAMP,
+					start_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+					ended_at TIMESTAMP,
 					id_project INTEGER NOT NULL REFERENCES projects(id))`,
 					(err) => {
 						if (err) {
@@ -532,14 +531,14 @@ export default class Database {
 						}
 
 						db.run(
-							`INSERT INTO meetings (title, id_project) VALUES (?, ?)`,
-							[meeting.getTitle(), projectId],
+							`INSERT INTO sprints (title, id_project) VALUES (?, ?)`,
+							[sprint.getTitle(), projectId],
 							(err) => {
 								if (err) {
 									return reject(err); // Rejeita a Promise se houver erro
 								}
 								db.get(
-									`SELECT * from meetings order by id DESC limit 1`,
+									`SELECT * from sprints order by id DESC limit 1`,
 									(err, row) => {
 										if (err) {
 											return reject(err);
@@ -556,11 +555,11 @@ export default class Database {
 		});
 	}
 
-	getMeetings() {
+	getSprints() {
 		const db = new sqlite3.Database("database.sqlite");
 
 		return new Promise((resolve, reject) => {
-			db.all(`SELECT * FROM meetings`, (err, rows) => {
+			db.all(`SELECT * FROM sprints`, (err, rows) => {
 				db.close();
 
 				if (err) {
@@ -572,11 +571,11 @@ export default class Database {
 		});
 	}
 
-	getMeeting(id: number) {
+	getSprint(id: number) {
 		const db = new sqlite3.Database("database.sqlite");
 
 		return new Promise((resolve, reject) => {
-			db.get(`SELECT * FROM meetings where id = ?`, id, (err, row) => {
+			db.get(`SELECT * FROM sprints where id = ?`, id, (err, row) => {
 				db.close();
 
 				if (err) {
@@ -588,12 +587,12 @@ export default class Database {
 		});
 	}
 
-	closeMeeting(id: number) {
+	closeSprint(id: number) {
 		const db = new sqlite3.Database("database.sqlite");
 
 		return new Promise((resolve, reject) => {
 			db.run(
-				`UPDATE meetings set closed_at = ? where id = ?`,
+				`UPDATE sprints set closed_at = ? where id = ?`,
 				[new Date(), id],
 				(err) => {
 					if (err) {

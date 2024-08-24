@@ -11,5 +11,6 @@ router.post("/", listController.create);
 router.get("/", listController.getAll);
 router.patch("/rename/:id", listController.rename)
 router.patch("/reorder", listController.reorder)
+router.delete("/:id", listController.remove)
 
 export default router;

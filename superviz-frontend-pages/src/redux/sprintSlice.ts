@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
-const getInitialState = (): MeetingState => {
+const getInitialState = (): SprintState => {
   let initialId = '';
   let initialTitle = '';
   let initialProjectId = '';
 
   if (typeof window !== 'undefined') {
-    initialId = localStorage.getItem('meeting_id') ?? '';
-    initialTitle = localStorage.getItem('meeting_title') ?? '';
+    initialId = localStorage.getItem('sprint_id') ?? '';
+    initialTitle = localStorage.getItem('sprint_title') ?? '';
     initialProjectId = localStorage.getItem('project_id') ?? '';
   }
 
@@ -19,28 +19,29 @@ const getInitialState = (): MeetingState => {
   };
 }
 
-interface MeetingState {
+interface SprintState {
   id: string;
   title: string;
   id_project: string | number;
 }
 
-const initialState: MeetingState = {
+const initialState: SprintState = {
   id: '',
   title: '',
   id_project: ''
 };
 
-const meetingSlice = createSlice({
-  name: 'meeting',
+const sprintSlice = createSlice({
+  name: 'sprint',
   initialState: getInitialState,
   reducers: {
-    setMeeting: (state, action: PayloadAction<MeetingState>) => {
+    setSprint: (state, action: PayloadAction<SprintState>) => {
       state.id = action.payload.id;
       state.title = action.payload.title;
+      state.id_project = action.payload.id_project
     },
   },
 });
 
-export const { setMeeting } = meetingSlice.actions;
-export default meetingSlice.reducer;
+export const { setSprint } = sprintSlice.actions;
+export default sprintSlice.reducer;
