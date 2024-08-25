@@ -39,6 +39,7 @@ export default function ModalParticipant({
 						name: res.data.name,
 						id_sprint: sprint.id,
 						isHost: true,
+						joined: false,
 					})
 				);
 

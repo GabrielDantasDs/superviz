@@ -57,6 +57,8 @@ export default function Sprint() {
 	const sprint = useSelector((state: RootState) => state.sprint);
 	const participant = useSelector((state: RootState) => state.participant);
 	const user = useSelector((state: RootState) => state.user);
+	const [originList, setOriginList] = useState<string|number> ();
+	const [destinationList, setDestintionList] = useState<string|number> ();
 
 	useEffect(() => {
 		fetchData().then((res) => {
@@ -108,6 +110,20 @@ export default function Sprint() {
 			setLoading(false);
 		}
 	}, [participant]);
+
+	useEffect(() => {
+		if (originList) {
+			const list = lists.find(list => list.id == originList);
+			if (list)
+				reorderCards(list.cards);
+		}
+
+		if (destinationList) {
+			const list = lists.find(list => list.id == destinationList);
+			if (list)
+				reorderCards(list.cards);
+		}
+	}, [lists])
 
 	async function fetchData() {
 		const aux = await get(sprint.id_project, sprint.id);
@@ -200,6 +216,8 @@ export default function Sprint() {
 						);
 				}
 
+				console.log(lists)
+
 				const card_activity: CardActivity = {
 					destination_list: destinationList,
 					destination_position: destination.index,
@@ -210,7 +228,14 @@ export default function Sprint() {
 					created_at: dayjs().format("YYYY-MM-DD HH:mm"),
 				};
 
+
+
 				reorderCards(originList.cards);
+
+				if (destinationList) {
+					reorderCards(destinationList.cards);
+				}
+
 				dispatch(setUpdateList(true));
 				dispatch(setUpdateCardsActivities(true));
 				createCardActivity({
@@ -222,7 +247,13 @@ export default function Sprint() {
 					id_user: user.id,
 					id_sprint: sprint.id
 				});
+
 				dispatch(addNewActivity(card_activity));
+
+				setOriginList(originList.id);
+				
+				if(destinationList)
+					setDestintionList(destinationList.id)
 			}
 		}
 
@@ -295,6 +326,7 @@ export default function Sprint() {
 		}
 	};
 
+
 	const leftSprint = () => {
 		dispatch(leftSprintAction());
 		window.location.href = "/join-sprint";
@@ -362,6 +394,7 @@ export default function Sprint() {
 											<List
 												data={list}
 												handleDragDrop={onDragEnd}
+												key={list.id}
 											/>
 										))}
 										{provided.placeholder}

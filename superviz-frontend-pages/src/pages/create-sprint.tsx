@@ -70,7 +70,7 @@ export default function CreateSprint() {
 
 					if (!participant.id) {
 						setParticipant({
-							id: user.id,
+							id: user.id.toString(),
 							isHost: true,
 							joined: true,
 							name: user.name,

@@ -143,7 +143,7 @@ export default function ClosedSprint() {
 						</button>
 						<div className="flex -mx-4 gap-8 h-full">
 							{lists.map((list:any) => (
-								<ListClosed data={list} />
+								<ListClosed data={list} key={list.id}/>
 							))}
 						</div>
 					</div>

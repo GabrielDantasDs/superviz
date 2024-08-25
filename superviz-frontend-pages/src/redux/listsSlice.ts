@@ -62,7 +62,7 @@ const listsSlice = createSlice({
 			if (list) {
 				let cards = list.cards;
         // A posição do card tem que mudar antes de ele entrar na lista --> PRIORIDADE, RESOLVER ANTES DE TUDO
-        card = {...card, position: new_card_position};
+        card = {...card, position: new_card_position, id_list: action.payload.id_destination_list};
 				// Caso vá pro fim da lista
 				if (cards.length - 1 == card.position) {
 

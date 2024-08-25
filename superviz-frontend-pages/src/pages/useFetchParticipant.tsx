@@ -25,7 +25,7 @@ const useFetchParticipant = () => {
 				.post("http://localhost:8000/participants", { name: name })
 				.then((res) => {
 					dispatch(
-						setParticipant({ id: res.data.id.toString(), name: res.data.name, isHost: true })
+						setParticipant({ id: res.data.id.toString(), name: res.data.name, isHost: true, joined: false })
 					);
 				});
 		}

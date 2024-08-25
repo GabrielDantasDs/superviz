@@ -129,8 +129,8 @@ export default class CardRepository {
 					this.db
 						.getConnection()
 						.run(
-							`UPDATE cards SET position = ? and id_list = ? where id = ?`,
-							[card.position, card.id, card.id_list],
+							`UPDATE cards SET position = ?, id_list = ? where id = ?`,
+							[card.position, card.id_list, card.id],
 							(err) => {
 								if (err) {
 									reject(err);

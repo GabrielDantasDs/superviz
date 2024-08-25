@@ -15,9 +15,15 @@ const getInitialState = (): ParticipantState => {
   let initialIdSprint = '';
 
   if (typeof window !== 'undefined') {
-    initialId = localStorage.getItem('id') ?? '';
-    initialName = localStorage.getItem('name') ?? '';
-    initialIdSprint = localStorage.getItem('id_sprint') ?? ''
+    let user = localStorage.getItem('user');
+  
+    if (user != null) {
+      let parsed_user = JSON.parse(user);
+
+      initialId = parsed_user.id
+      initialName = parsed_user.name
+    }
+
   }
 
   return {

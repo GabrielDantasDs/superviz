@@ -45,8 +45,8 @@ export default function Sidebar() {
 				<div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-slate-400">
 					<ul className="space-y-2 font-medium">
 						{cards_activities.map((card_activity) => (
-							<li>
-								<CardActivity data={card_activity} />
+							<li key={card_activity.id}>
+								<CardActivity data={card_activity} key={card_activity.id}/>
 							</li>
 						))}
 					</ul>

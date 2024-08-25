@@ -2,3 +2,4 @@
 superviz-backend/.env
 superviz-backend/.env
 superviz-backend/database.sqlite
+superviz-frontend-pages/.env.development

@@ -52,7 +52,7 @@ export default class ProjectController {
       const project: SQLiteResult = await this.projectRepository.getProject(req.params.id);
       const cards: SQLiteResult[] = await this.cardRepository.getCards(project.id);
       const lists: SQLiteResult[] = await this.listRepository.getLists(project.id);
-      const cards_activities: SQLiteResult[] = await this.cardActivitiesRepository.getCardActivityBySprint(project.id);
+      const cards_activities: SQLiteResult[] = await this.cardActivitiesRepository.getCardActivityBySprint(req.body.id_sprint);
 
       const _cards = await Promise.all(
         cards.map(async (card: SQLiteResult) => {

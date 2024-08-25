@@ -1,12 +1,15 @@
+
+"use client";
+
 import dynamic from "next/dynamic";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import { MousePointers, WhoIsOnline } from "@superviz/react-sdk";
+import { MousePointers, Realtime, WhoIsOnline } from "@superviz/react-sdk";
 import Wrapper from "./components/Wrapper";
 import { useDispatch } from "react-redux";
 import { joinSprint, leftSprint } from "./redux/participantSlice";
-
+import Event from "./components/Event";
 const SuperVizRoomProvider = dynamic(
 	() => import("@superviz/react-sdk").then((mod) => mod.SuperVizRoomProvider),
 	{
@@ -35,17 +38,18 @@ export function Providers({ children }: any, store: any) {
 		<SuperVizRoomProvider
 			developerKey={superviz_key}
 			group={{
-				id: "1",
-				name: "grupo",
+				id: "group-2",
+				name: `sprint-${sprint.id}`
 			}}
-			participant={{...participant, id: `participant-${participant.id}`}}
+			participant={{id: `participant-${participant.id}`, name: participant.name}}
 			onParticipantLocalJoined={onParticipantLocalJoined}
 			onParticipantLocalLeft={onParticipantLocalLeft}
 			roomId={`sprint-${sprint.id}`}
 		>
 			<WhoIsOnline position="top-right" />
 			<MousePointers elementId="canva" />
-			<Wrapper />
+			<Realtime />
+			<Event />
 			{children}
 		</SuperVizRoomProvider>
 	);

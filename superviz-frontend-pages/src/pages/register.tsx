@@ -6,7 +6,7 @@ import { setUser as setUserAction } from "@/redux/userSlice";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 
-export default function register() {
+export default function Register() {
 	const [user, setUser] = useState<User>({
 		name: "",
 		email: "",

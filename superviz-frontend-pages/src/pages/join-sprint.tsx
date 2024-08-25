@@ -93,12 +93,14 @@ export default function JoinSprint() {
 
 						if (!participant.id) {
 							setParticipant({
-								id: user.id,
+								id: user.id.toString(),
 								isHost: true,
 								joined: true,
 								name: user.name,
 								id_sprint: res.data.id,
 							});
+							
+							router.push(`/sprint/${res.data.id}`);
 						} else {
 							router.push(`/sprint/${res.data.id}`);
 						}
@@ -187,7 +189,7 @@ export default function JoinSprint() {
 							: "hover:bg-purple-700"
 					}`}
 				>
-					Entre na reunião agora
+					Join
 				</button>
 			</div>
 			<ModalParticipant

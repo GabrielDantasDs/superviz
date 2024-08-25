@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import { setParticipant } from "@/redux/participantSlice";
 
-export default function login() {
+export default function Login() {
 	const [user, setUser] = useState<User>({
 		name: "",
 		email: "",
