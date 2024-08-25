@@ -52,13 +52,13 @@ export default class ProjectController {
       const project: SQLiteResult = await this.projectRepository.getProject(req.params.id);
       const cards: SQLiteResult[] = await this.cardRepository.getCards(project.id);
       const lists: SQLiteResult[] = await this.listRepository.getLists(project.id);
-      const cards_activities: SQLiteResult[] = await this.cardActivitiesRepository.getCardActivityByProject(project.id);
+      const cards_activities: SQLiteResult[] = await this.cardActivitiesRepository.getCardActivityBySprint(project.id);
 
       const _cards = await Promise.all(
         cards.map(async (card: SQLiteResult) => {
           const tasks: SQLiteResult[] = await this.taskRepository.getTasks(card.id);
           const tags: SQLiteResult[] = await this.tagRepository.getTags(card.id);
-          return { id:card.id, title: card.title, content: card.content, position:card.position, id_list: card.id_list,tasks, tags };
+          return { id:card.id, title: card.title, content: card.content, position:card.position, id_list: card.id_list, id_user: card.id_user, tasks, tags };
         })
       );
 

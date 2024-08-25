@@ -13,8 +13,8 @@ export default class ListController {
       const list: SQLiteResult = await this.listRepository.createList(req.body.title, req.body.position, req.body.id_project);
       return res.status(200).json(list);
     } catch (error) {
-      console.error('Erro ao criar a lista:', error);
-      return res.status(500).json("Houve um erro ao criar a lista.");
+
+      return res.status(500).json("Error");
     }
   };
 
@@ -33,8 +33,8 @@ export default class ListController {
       const lists: SQLiteResult[] = await this.listRepository.getLists(req.body.id_project);
       return res.status(200).json(lists);
     } catch (error) {
-      console.error('Erro ao obter as listas:', error);
-      return res.status(404).json("Nehuma lista encontrada");
+
+      return res.status(404).json("List not found");
     }
   };
 
@@ -43,8 +43,8 @@ export default class ListController {
       const list: SQLiteResult = await this.listRepository.renameList(req.params.id, req.body.title);
       return res.status(200).json(list);
     } catch (error) {
-      console.error('Erro ao renomear a lista:', error);
-      return res.status(404).json("Nenhum lista encontrada");
+
+      return res.status(404).json("List not found");
     }
   };
 
@@ -53,8 +53,8 @@ export default class ListController {
       await this.listRepository.reorderLists(req.body);
       return res.status(200).json("Sucesso");
     } catch (error) {
-      console.error('Erro ao reordenar as listas:', error);
-      return res.status(500).json("Erro interno ao reordenar as listas");
+
+      return res.status(500).json("Error");
     }
   };
 
@@ -64,7 +64,7 @@ export default class ListController {
       return res.status(200).json("Sucesso");
     } catch (error) {
       console.error('Erro ao reordenar as listas', error);
-      return res.status(500).json("Erro interno ao remover a lista");
+      return res.status(500).json("Error");
     }
   }
 }

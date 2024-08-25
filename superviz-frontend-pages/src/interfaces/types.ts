@@ -10,6 +10,8 @@ export interface Card {
 	position: number;
 	title: string;
 	id_list: string | number;
+	id_user?: string | number;
+	user_name?: string;
 	content: string;
 	tags: Tag[];
 	tasks: Task[];
@@ -51,6 +53,7 @@ export interface CardActivity {
 	source_position: number;
 	destination_position: number;
 	card?: Card | undefined;
+	user: User | undefined;
 	source_list: List | undefined;
 	destination_list: List | undefined;
 	created_at: string
@@ -61,7 +64,7 @@ export interface User {
 	id_company?: string | number;
 	name: string;
 	email: string;
-	password: string
+	password?: string
 }
 
 export interface Company {

@@ -9,6 +9,29 @@ type UserState = {
     id: string | number;
 };
 
+const getInitialState = (): UserState => {
+    let initialId = '';
+    let initialName = '';
+    let initialEmail = '';
+    let initialIdCompany = '';
+  
+    if (typeof window !== 'undefined') {
+      let user = localStorage.getItem('user');
+  
+      if (user !== null) {
+        let parsed_user = JSON.parse(user);
+
+        initialId = parsed_user.id;
+        initialName = parsed_user.name;
+        initialEmail = parsed_user.email;
+        initialIdCompany = parsed_user.id_company;
+      } 
+      
+    }
+  
+    return {id: initialId, name: initialName, email: initialEmail, id_company: initialIdCompany}
+  }
+
 const initialState:UserState = {
     id: "",
     name: "",
@@ -18,7 +41,7 @@ const initialState:UserState = {
 
 const userSlice = createSlice({
     name:  "user",
-    initialState,
+    initialState: getInitialState,
     reducers: {
         setUser: (state, action: PayloadAction<UserState>) => {
             let user = state;

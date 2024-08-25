@@ -37,7 +37,19 @@ export default class SprintRepository {
   async getSprints(): Promise<any[]> {
     return new Promise((resolve, reject) => {
       this.db.getConnection().all(
-        `SELECT * FROM sprints`,
+        `SELECT * FROM sprints where ended_at is NULL`,
+        (err, rows) => {
+          if (err) reject(err);
+          else resolve(rows);
+        }
+      );
+    });
+  }
+
+  async getClosedsprints(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.db.getConnection().all(
+        `SELECT * FROM sprints where ended_at is not NULL`,
         (err, rows) => {
           if (err) reject(err);
           else resolve(rows);
@@ -59,16 +71,39 @@ export default class SprintRepository {
     });
   }
 
-  async closeSprint(id: number): Promise<boolean> {
+  async getClosedSprint(id: number): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.db.getConnection().run(
-        `UPDATE sprints SET closed_at = ? WHERE id = ?`,
-        [new Date(), id],
-        (err) => {
-          if (err) reject(false);
-          else resolve(true);
+      this.db.getConnection().get(
+        `SELECT * FROM sprint_data WHERE id_sprint = ?`,
+        [id],
+        (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
         }
       );
+    });
+  }
+
+  async closeSprint(id: number, data: any): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.db.getConnection().serialize(() => {
+        this.db.getConnection().run(
+          `UPDATE sprints SET ended_at = ? WHERE id = ?`,
+          [new Date(), id],
+          (err) => {
+            if (err) reject(err);
+          }
+        );
+
+        this.db.getConnection().run(
+          `INSERT INTO sprint_data (id_sprint, data) VALUES (?,?)`,
+          [id, data],
+          (err) => {
+            if (err) reject(err);
+            else resolve(true);
+          }
+        );
+      })
     });
   }
 }

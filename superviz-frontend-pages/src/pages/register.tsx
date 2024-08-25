@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setUser as setUserAction } from "@/redux/userSlice";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 
 export default function register() {
 	const [user, setUser] = useState<User>({
@@ -26,10 +27,15 @@ export default function register() {
 				dispatch(setUserAction({id: res.id, email: res.email, name: res.name, id_company: res.id_company}));
 
 				localStorage.setItem("token", res.jwt_token);
+				localStorage.setItem("user", JSON.stringify({ id: res.id, name: res.name, email: res.email, id_company: res.id_company}));
+
+				router.push("/home");
 			});
+		} else {
+			Swal.fire("Ops", "Enter company name or code", "error");
+			return;
 		}
 
-		router.push("/home");
 		setLoading(false);
 	};
 

@@ -30,6 +30,7 @@ export default function Navbar() {
   function signOut() {
     dispatch(unsetUser());
     localStorage.removeItem('token')
+    localStorage.removeItem('user');
 
     router.push("/");
   }

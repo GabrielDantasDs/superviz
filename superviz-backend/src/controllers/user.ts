@@ -112,4 +112,18 @@ export default class UserController {
 				return res.status(422).json(`error - Invalid credentials`);
 		}
 	};
+
+	getAllByCompany = async (req:any, res:any) => {
+		try {
+			const response = await this.userRepository.getAllByCompany(req.params.id);
+
+			if (response) {
+				return res.status(200).json(response);
+			}
+
+			return res.status(404).json(`error - Not found`);
+		} catch (err) {
+			return res.status(404).json(`error - Not found`);
+		}
+	}
 }

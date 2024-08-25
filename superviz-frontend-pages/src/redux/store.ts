@@ -6,6 +6,8 @@ import listsReducer from './listsSlice';
 import updateLisdReducer from './updateListSlice';
 import cardActivityReducer from './cardActivitySlice';
 import userReducer from './userSlice';
+import usersReducer from './usersSlice';
+import updateCardsActivitiesReducer from './updateCardsActivitiesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,8 +16,10 @@ export const store = configureStore({
     project: projectReducer,
     lists: listsReducer,
     updateList: updateLisdReducer,
+    updateCardsActivities: updateCardsActivitiesReducer,
     cards_activities: cardActivityReducer,
-    user: userReducer
+    user: userReducer,
+    users: usersReducer
   },
 });
 

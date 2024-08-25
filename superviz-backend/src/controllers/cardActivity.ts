@@ -12,7 +12,7 @@ export default class CardActivityController {
   
     create = async (req: any, res: any) => {
       try {
-        const card_activity = new CardActivity(req.body.source_position, req.body.destination_position, req.body.id_card, req.body.source_list_id, req.body.destination_list_id);
+        const card_activity = new CardActivity(req.body.source_position, req.body.destination_position, req.body.id_card, req.body.id_user, req.body.id_sprint, req.body.source_list_id, req.body.destination_list_id);
         const response: SQLiteResult = await this.cardActivityRepository.newCardActivity(card_activity);
         return res.status(200).json(response);
       } catch (err) {
@@ -41,9 +41,9 @@ export default class CardActivityController {
       }
     }
 
-    getAllByProject = async (req: any, res: any) => {
+    getAllBySprint = async (req: any, res: any) => {
       try {
-        const response: SQLiteResult = await this.cardActivityRepository.getCardActivityByProject(req.params.id);
+        const response: SQLiteResult = await this.cardActivityRepository.getCardActivityBySprint(req.params.id);
         return res.status(200).json(response);
       } catch (err) {
         console.error('Erro ao criar o card:', err);

@@ -15,6 +15,9 @@ const cardActivitySlice = createSlice({
             cards_activities.push(action.payload);
 
             return cards_activities;
+        },
+        updateCardActivity: (state, action:PayloadAction<null>) => {
+            return state
         }
     }
 })

@@ -157,6 +157,7 @@ const listsSlice = createSlice({
           if (found_card) {
             found_card.title = card.title;
             found_card.content = card.content;
+            found_card.id_user = card.id_user
           }
         }
       });

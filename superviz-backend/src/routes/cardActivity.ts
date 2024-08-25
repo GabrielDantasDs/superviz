@@ -11,6 +11,6 @@ const cardActivityController = new CardActivityController();
 router.post("/", cardActivityController.create);
 router.get("/:id", cardActivityController.get);
 router.get("/card/:id", cardActivityController.getAllByCard);
-router.get("/project/:id", cardActivityController.getAllByProject);
+router.get("/sprint/:id", cardActivityController.getAllBySprint);
 
 export default router;

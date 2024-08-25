@@ -50,4 +50,15 @@ export default class UserRepository {
 			});
 		});
 	}
+
+	getAllByCompany(id_company: number|string): Promise<any> {
+		return new Promise((resolve, reject) => {
+			this.db.getConnection().all(
+				`SELECT * FROM users where id_company = ?`, [id_company], (err, rows) => {
+					if (err) reject(err);
+					else resolve(rows);
+				}
+			)
+		})
+	}
 }

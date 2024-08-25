@@ -1,3 +1,4 @@
+import axiosInstance from "@/axiosInstance";
 import { Company, User } from "@/interfaces/types";
 import axios from "axios";
 
@@ -23,6 +24,30 @@ export async function login(email: string, password: string) {
 			return res.data;
 		} else {
 			throw new Error('Login failed');
+		}
+	}).catch(err => {
+		throw err;
+	})
+}
+
+export async function getAllByCompany(id_company: string|number) {
+	return await axiosInstance.get(`http://localhost:8000/users/all/${id_company}`).then((res) => {
+		if (res.status == 200) {
+			return res.data;
+		} else {
+			throw new Error('Not found');
+		}
+	}).catch(err => {
+		throw err;
+	})
+}
+
+export async function asignUser(id_card: string|number, id_user: string|number) {
+	return await axiosInstance.post(`http://localhost:8000/users/asign`, {id_card, id_user}).then((res) => {
+		if (res.status == 200) {
+			return res.data;
+		} else {
+			throw new Error('Not found');
 		}
 	}).catch(err => {
 		throw err;

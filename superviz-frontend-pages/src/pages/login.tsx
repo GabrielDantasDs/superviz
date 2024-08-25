@@ -21,11 +21,12 @@ export default function login() {
 	const login = async () => {
 		setLoading(true);
 
-		if (user) {
+		if (user && user.password!) {
 			await loginReq(user.email, user.password).then((res) => {
 				dispatch(setUserAction({id: res.id, email: res.email, name: res.name, id_company: res.id_company}));
 
 				localStorage.setItem("token", res.jwt_token);
+				localStorage.setItem("user", JSON.stringify({ id: res.id, name: res.name, email: res.email, id_company: res.id_company}));
 
                 router.push("/home");
 			}).catch(err => {

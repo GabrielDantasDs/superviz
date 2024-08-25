@@ -1,5 +1,9 @@
+import { asignUser } from "@/api/user";
 import { Card } from "@/interfaces/types";
+import { RootState } from "@/redux/store";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 type PropsInterface = {
 	isOpen: boolean;
@@ -15,6 +19,7 @@ export default function ModalCard({
 	onCloseCallBack,
 }: PropsInterface) {
 	const [data, setData] = useState(card);
+	const users = useSelector((state: RootState) => state.users);
 
 	const onClose = () => {
 		onCloseCallBack();
@@ -35,6 +40,11 @@ export default function ModalCard({
 
         setData({...data, tasks });
     }
+
+	const asignCard = async (id_user: number|string) => {
+		console.log(id_user)
+		setData({ ...data, id_user: id_user, user_name: users.find(user => user.id == id_user)?.name});
+	}
 
 	if (!isOpen) return null;
 
@@ -72,8 +82,17 @@ export default function ModalCard({
 						className="w-full p-2 border border-gray-300 rounded text-black"
 					/>
 				</div>
-
 				<div className="mb-12">
+					<label className="block text-gray-700 mb-2" htmlFor="email">
+						User
+					</label>
+					<select className="w-full p-2 border border-gray-300 rounded text-black" name="user" onChange={(e) => asignCard(e.target.value)}>
+						<option value={undefined}></option>
+						{users.map((user, index) => <option selected={user.id == data.id_user ? true : false} key={index} value={user.id}>{user.name}</option>)}
+					</select>
+				</div>
+
+				{/* <div className="mb-12">
 					<h2 className="text-lg text-purple-500 font-bold mb-4">
 						Tasks
 					</h2>
@@ -94,7 +113,7 @@ export default function ModalCard({
 							</label>
 						</div>
 					))}
-				</div>
+				</div> */}
 				<div className="flex justify-end space-x-4">
 					<button
 						onClick={onClose}

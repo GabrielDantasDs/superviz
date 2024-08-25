@@ -80,6 +80,7 @@ export default class Database {
 					`CREATE TABLE IF NOT EXISTS cards (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           id_project INTEGER NOT NULL REFERENCES projects(id),
+		  id_user INTEGER REFERENCES users(id),
           title TEXT NOT NULL,
           content TEXT,
           position INTEGER NOT NULL,
@@ -174,7 +175,21 @@ export default class Database {
 		  destination_position INTEGER NOT NULL,
 		  destination_list_id INTEGER NOT NULL,
 		  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          id_card INTEGER NOT NULL REFERENCES card(id))`,
+          id_card INTEGER NOT NULL REFERENCES card(id),
+		  id_user INTEGER NOT NULL REFERENCES users(id),
+		  id_sprint INTEGER NOT NULL REFERENCES sprints(id)) 
+		  `,
+					(err) => {
+						if (err) reject(err);
+						else resolve();
+					}
+				);
+
+				this.db.run(
+					`CREATE TABLE IF NOT EXISTS sprint_data (
+		  data BLOB NOT NULL,
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          id_sprint INTEGER NOT NULL REFERENCES sprints(id))`,
 					(err) => {
 						if (err) reject(err);
 						else resolve();

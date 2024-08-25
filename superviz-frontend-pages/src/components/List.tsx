@@ -37,7 +37,7 @@ export default function List({ data, handleDragDrop }: ListProps) {
 	const addCard = async () => {
 		await axiosInstance
 			.post("http://localhost:8000/cards", {
-				title: "Novo card",
+				title: "New card",
 				position: 0,
 				id_list: data.id,
 				id_project: project.id,
@@ -72,10 +72,10 @@ export default function List({ data, handleDragDrop }: ListProps) {
 	};
 
 	const handleRemoveList = async () => {
-		await removeListReq(data.id).then(res => {
+		await removeListReq(data.id).then((res) => {
 			dispatch(removeList(data.id));
 			dispatch(setUpdateList(true));
-		})
+		});
 	};
 
 	return (
@@ -94,7 +94,7 @@ export default function List({ data, handleDragDrop }: ListProps) {
 						className="bg-white shadow-lg rounded-lg overflow-hidden mb-4"
 						{...provided.dragHandleProps}
 					>
-						<div className="px-4 py-2 d-flex">
+						<div className="px-4 py-2 flex">
 							<h2 className="text-xl font-bold text-gray-800">
 								<EdiText
 									type="text"
@@ -102,7 +102,10 @@ export default function List({ data, handleDragDrop }: ListProps) {
 									onSave={handleRenameList}
 								/>
 							</h2>
-							<button onClick={handleRemoveList} className="bg-red-700 hover:bg-red-600 text-white font-bold py-3 my-3 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+							<button
+								onClick={handleRemoveList}
+								className="bg-red-700 hover:bg-red-600 text-white font-bold py-4 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 20 20"
@@ -130,7 +133,7 @@ export default function List({ data, handleDragDrop }: ListProps) {
 										onClick={addCard}
 										className="bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 mx-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
 									>
-										Novo card
+										New card
 									</button>
 								</div>
 
@@ -145,6 +148,7 @@ export default function List({ data, handleDragDrop }: ListProps) {
 											content={card.content}
 											tags={card.tags}
 											tasks={card.tasks}
+											id_user={card.id_user}
 										/>
 									);
 								})}

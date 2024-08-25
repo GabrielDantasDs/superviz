@@ -36,11 +36,11 @@ export default function ModalProject({
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 			<div className="bg-white p-6 rounded-lg shadow-lg">
 				<h2 className="text-2xl text-purple-800 font-bold mb-4">
-					Insira os dados do novo projeto
+					Enter a name to project
 				</h2>
 				<div className="mb-4">
 					<label className="block text-gray-700 mb-2" htmlFor="name">
-						Nome
+						Name
 					</label>
 					<input
 						id="name"

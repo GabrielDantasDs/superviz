@@ -27,7 +27,7 @@ export default class CardController {
         return res.status(200).json("Sucesso");
       } catch (err) {
         console.error('Erro ao criar tarefa:', err);
-        return res.status(500).json('Erro interno ao criar tarefa');
+        return res.status(500).json('Error');
       }
     };
   
@@ -37,33 +37,19 @@ export default class CardController {
         if (tag) {
           if (tag.hasOwnProperty('id')) {
             await this.tagRepository.addTagToCard(req.body.id_card, tag.id);
-            return res.status(200).json('Sucesso');
+            return res.status(200).json('Success');
           } else {
-            return res.status(404).json('Tag não encontrada');
+            return res.status(404).json('Tag not found');
           }
         } else {
-          return res.status(404).json('Tag não encontrada');
+          return res.status(404).json('Tag not found');
         }
       } catch (err) {
         console.error('Erro ao buscar tag:', err);
-        return res.status(500).json('Erro interno ao buscar tag');
+        return res.status(500).json('Error');
       }
     };
-  
-    // move = async (req: any, res: any) => {
-    //   try {
-    //     const list = await this.listRepository.getList(req.body.id_list);
-    //     if (list) {
-    //       await this.cardRepository.moveCard(req.params.id, req.body.id_list, req.body.position);
-    //       return res.status(200).json("Sucesso");
-    //     } else {
-    //       return res.status(404).json("Lista ou card não encontrada(o)");
-    //     }
-    //   } catch (err) {
-    //     console.error('Erro ao mover o card:', err);
-    //     return res.status(500).json("Erro interno ao mover o card");
-    //   }
-    // };
+
   
     create = async (req: any, res: any) => {
       try {
@@ -71,14 +57,18 @@ export default class CardController {
         const response: SQLiteResult = await this.cardRepository.newCard(req.body.id_project, req.body.id_list, card);
         return res.status(200).json(response);
       } catch (err) {
-        console.error('Erro ao criar o card:', err);
-        return res.status(500).json("Erro interno ao criar o card");
+
+        return res.status(500).json("Erro");
       }
     };
   
     update = async (req: any, res: any) => {
       try {
         let card = new Card(req.body.title, req.body.position, req.body.content, req.body.tasks);
+
+        if (req.body.id_user) {
+          card.setUser(req.body.id_user);
+        }
 
         const response: SQLiteResult = await this.cardRepository.updateCard(req.params.id, card);
         const tags: SQLiteResult[] = await this.tagRepository.getTags(req.params.id);
@@ -93,18 +83,41 @@ export default class CardController {
   
         return res.status(200).json(response);
       } catch (err) {
-        console.error('Erro ao atualizar o card:', err);
-        return res.status(500).json("Erro interno ao atualizar o card");
+        return res.status(500).json("Error");
       }
     };
   
     reorder = async (req: any, res: any) => {
       try {
         await this.cardRepository.reorderCards(req.body);
-        return res.status(200).json("Sucesso");
+        return res.status(200).json("Success");
       } catch (err) {
-        console.error('Erro ao reordenar os cards:', err);
-        return res.status(500).json("Erro interno ao reordenar os cards");
+
+        return res.status(500).json("Error");
       }
     };
+
+    asignUser = async (req: any, res: any) => {
+      try {
+        const response = await this.cardRepository.asignUser(req.body.id_card, req.body.id_user);
+        if (response) {
+          const card = await this.cardRepository.getCard(req.body.id_card);
+          console.log(card)
+          if(card) {
+            return res.status(200).json(card);
+          }
+        }
+      } catch (err) {
+        return res.status(422).json("Error on asign card")
+      }
+    }
+
+    removeCard = async (req:any, res:any) => {
+      try {
+        const response = await this.cardRepository.delete(req.params.id);
+        if (response) return res.status(200).json(true);
+      } catch (err) {
+        return res.status(422).json("Error on delete card")
+      }
+    }
   }

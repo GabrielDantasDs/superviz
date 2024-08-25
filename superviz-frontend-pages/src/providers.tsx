@@ -38,10 +38,10 @@ export function Providers({ children }: any, store: any) {
 				id: "1",
 				name: "grupo",
 			}}
-			participant={participant}
+			participant={{...participant, id: `participant-${participant.id}`}}
 			onParticipantLocalJoined={onParticipantLocalJoined}
 			onParticipantLocalLeft={onParticipantLocalLeft}
-			roomId={sprint.id}
+			roomId={`sprint-${sprint.id}`}
 		>
 			<WhoIsOnline position="top-right" />
 			<MousePointers elementId="canva" />

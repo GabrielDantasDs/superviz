@@ -64,12 +64,18 @@ export default function CreateSprint() {
 						setSprint({
 							id: res.data.id.toString(),
 							title: res.data.title,
-							id_project: res.data.id_project
+							id_project: res.data.id_project,
 						})
 					);
 
 					if (!participant.id) {
-						setParticipant({ id: user.id, isHost: true, joined: true, name: user.name, id_sprint: res.data.id})
+						setParticipant({
+							id: user.id,
+							isHost: true,
+							joined: true,
+							name: user.name,
+							id_sprint: res.data.id,
+						});
 					} else {
 						router.push(`/sprint/${res.data.id}`);
 					}
@@ -77,7 +83,10 @@ export default function CreateSprint() {
 		}
 	};
 
-	const handleParticipantModalSubmit = async (name: string, email: string) => {
+	const handleParticipantModalSubmit = async (
+		name: string,
+		email: string
+	) => {
 		if (name && email) {
 			router.push(`/sprint/${sprint.id}`);
 		}
@@ -109,12 +118,12 @@ export default function CreateSprint() {
 				<div className="min-h-screen bg-white flex items-center justify-center p-4">
 					<div className="text-center max-w-lg mx-auto">
 						<h1 className="text-4xl md:text-5xl font-bold text-purple-800 mb-6">
-							Escolha um Projeto
+							Choose a project
 						</h1>
 						<p className="text-lg md:text-xl text-gray-700 mb-8">
-							Selecione o projeto que deseja usar na reunião. Você
-							pode gerenciar seus projetos e colaborar com sua
-							equipe em tempo real.
+							Select the project you want to use in the sprint.
+							You can manage your projects and collaborate with
+							your team in real time.
 						</p>
 						<div className="space-y-4">
 							{projects.map((project) => (
@@ -146,7 +155,7 @@ export default function CreateSprint() {
 											: "hover:bg-purple-700"
 									}`}
 								>
-									Crie uma nova reunião agora
+									Join
 								</button>
 							</div>
 							<div className="block">
@@ -159,7 +168,7 @@ export default function CreateSprint() {
 											: "hover:bg-purple-700"
 									}`}
 								>
-									Crie um novo projeto
+									Create a new project
 								</button>
 							</div>
 						</div>
@@ -179,7 +188,7 @@ export default function CreateSprint() {
 				<div className="min-h-screen bg-white flex items-center justify-center p-4">
 					<div className="text-center max-w-lg mx-auto">
 						<h1 className="text-4xl md:text-5xl font-bold text-purple-800 mb-6">
-							Escolha um título
+							Enter a name to sprint
 						</h1>
 						<div className="mb-12">
 							<input

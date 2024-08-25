@@ -2,7 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ParticipantState {
-  id: string | number;
+  id: string;
   name: string;
   id_sprint?: string,
   isHost: boolean,
