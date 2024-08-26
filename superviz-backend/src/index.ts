@@ -32,7 +32,7 @@ if (!db_exist) {
 boot();
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT ?? 3000;
 
 app.use(cors());
 
