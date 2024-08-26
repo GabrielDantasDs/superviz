@@ -152,7 +152,7 @@ export default function Sprint() {
 
 	async function addList() {
 		await axiosInstance
-			.post("http://localhost:8000/lists", {
+			.post("${process.env.NEXT_PUBLIC_BACKEND_API}/lists", {
 				title: "New list",
 				position: lists.length > 0 ? lists.length : 0,
 				id_project: project?.id,

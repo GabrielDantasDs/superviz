@@ -36,7 +36,7 @@ export default function List({ data, handleDragDrop }: ListProps) {
 
 	const addCard = async () => {
 		await axiosInstance
-			.post("http://localhost:8000/cards", {
+			.post("${process.env.NEXT_PUBLIC_BACKEND_API}/cards", {
 				title: "New card",
 				position: 0,
 				id_list: data.id,

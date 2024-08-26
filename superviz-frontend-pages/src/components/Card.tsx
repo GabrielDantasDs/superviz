@@ -47,7 +47,7 @@ const Card: React.FC<CardInterface> = (data: CardInterface) => {
 			setTasks([...tasks]);
 
 			await axiosInstance
-				.put(`http://localhost:8000/tasks/${task.id}`, completed, {
+				.put(`${process.env.NEXT_PUBLIC_BACKEND_API}/tasks/${task.id}`, completed, {
 					headers: { "ngrok-skip-browser-warning": "1" },
 				})
 				.then((res) => {});
@@ -69,7 +69,7 @@ const Card: React.FC<CardInterface> = (data: CardInterface) => {
 
 	const updateCard = async (data: CardInterface) => {
 		await axiosInstance
-			.put(`http://localhost:8000/cards/${data.id}`, data, {
+			.put(`${process.env.NEXT_PUBLIC_BACKEND_API}/cards/${data.id}`, data, {
 				headers: { "ngrok-skip-browser-warning": "1" },
 			})
 			.then((res) => {

@@ -34,7 +34,7 @@ export default function CreateSprint() {
 
 	async function fetchData() {
 		await axiosInstance
-			.get("http://localhost:8000/projects", {
+			.get("${process.env.NEXT_PUBLIC_BACKEND_API}/projects", {
 				headers: { "ngrok-skip-browser-warning": "1" },
 			})
 			.then((res) => {
@@ -55,7 +55,7 @@ export default function CreateSprint() {
 	const handleJoinSprint = async () => {
 		if (selectedProject !== null) {
 			await axiosInstance
-				.post("http://localhost:8000/sprints", {
+				.post("${process.env.NEXT_PUBLIC_BACKEND_API}/sprints", {
 					title: title,
 					id_project: selectedProject,
 				})

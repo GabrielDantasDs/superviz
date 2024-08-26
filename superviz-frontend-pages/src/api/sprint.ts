@@ -3,7 +3,7 @@ import axios from "axios";
 
 async function get(id: number) {
     return await axiosInstance
-        .get(`http://localhost:8000/sprints/${id}`, {
+        .get(`${process.env.NEXT_PUBLIC_BACKEND_API}/sprints/${id}`, {
             headers: { "ngrok-skip-browser-warning": "1" },
         })
         .then(async (res) => {
@@ -15,7 +15,7 @@ async function get(id: number) {
 
 export async function closeSprint(id: number|string) {
     return await axiosInstance
-    .patch(`http://localhost:8000/sprints/close/${id}`, {
+    .patch(`${process.env.NEXT_PUBLIC_BACKEND_API}/sprints/close/${id}`, {
         headers: { "ngrok-skip-browser-warning": "1" },
     })
     .then(async (res) => {
@@ -27,7 +27,7 @@ export async function closeSprint(id: number|string) {
 
 export async function getClosed(id:number|string) {
     return await axiosInstance
-    .get(`http://localhost:8000/sprints/closed/${id}`, {
+    .get(`${process.env.NEXT_PUBLIC_BACKEND_API}/sprints/closed/${id}`, {
         headers: { "ngrok-skip-browser-warning": "1" },
     })
     .then(async (res) => {

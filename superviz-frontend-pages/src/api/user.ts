@@ -4,7 +4,7 @@ import axios from "axios";
 
 export async function registerUser(user: User, company: Company, companyCode: string) {
 	return await axios
-		.post(`http://localhost:8000/users/register`, { user, company, companyCode})
+		.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/users/register`, { user, company, companyCode})
 		.then((res) => {
 			if (res.status == 200) {
 				axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.jwt_token}`;
@@ -16,7 +16,7 @@ export async function registerUser(user: User, company: Company, companyCode: st
 
 export async function login(email: string, password: string) {
 	return await axios
-	.post(`http://localhost:8000/users/login`, { email, password })
+	.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/users/login`, { email, password })
 	.then((res) => {
 		if (res.status == 200) {
 			axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.jwt_token}`;
@@ -31,7 +31,7 @@ export async function login(email: string, password: string) {
 }
 
 export async function getAllByCompany(id_company: string|number) {
-	return await axiosInstance.get(`http://localhost:8000/users/all/${id_company}`).then((res) => {
+	return await axiosInstance.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/users/all/${id_company}`).then((res) => {
 		if (res.status == 200) {
 			return res.data;
 		} else {
@@ -43,7 +43,7 @@ export async function getAllByCompany(id_company: string|number) {
 }
 
 export async function asignUser(id_card: string|number, id_user: string|number) {
-	return await axiosInstance.post(`http://localhost:8000/users/asign`, {id_card, id_user}).then((res) => {
+	return await axiosInstance.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/users/asign`, {id_card, id_user}).then((res) => {
 		if (res.status == 200) {
 			return res.data;
 		} else {

@@ -32,7 +32,7 @@ export default function JoinSprint() {
 
 	async function fetchData() {
 		await axiosInstance
-			.get("http://localhost:8000/sprints", {
+			.get("${process.env.NEXT_PUBLIC_BACKEND_API}/sprints", {
 				headers: { "ngrok-skip-browser-warning": "1" },
 			})
 			.then((res) => {
@@ -46,7 +46,7 @@ export default function JoinSprint() {
 			});
 
 		await axiosInstance
-			.get("http://localhost:8000/sprints/closed", {
+			.get("${process.env.NEXT_PUBLIC_BACKEND_API}/sprints/closed", {
 				headers: { "ngrok-skip-browser-warning": "1" },
 			})
 			.then((res) => {
@@ -75,7 +75,7 @@ export default function JoinSprint() {
 			console.log('teste')
 			if (selectedSprint !== undefined) {
 				await axiosInstance
-					.get(`http://localhost:8000/sprints/${selectedSprint}`)
+					.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/sprints/${selectedSprint}`)
 					.then(async (res) => {
 						dispatch(
 							setSprint({
@@ -110,7 +110,7 @@ export default function JoinSprint() {
 
 		if (selectedClosedSprint !== undefined) {
 			await axiosInstance
-			.get(`http://localhost:8000/sprints/${selectedClosedSprint}`)
+			.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/sprints/${selectedClosedSprint}`)
 			.then(async (res) => {
 				dispatch(
 					setSprint({

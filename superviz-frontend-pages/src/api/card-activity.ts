@@ -14,7 +14,7 @@ interface CardActivityPayload {
 
 export async function createCardActivity(cardActivity: CardActivityPayload) {
 	await axiosInstance
-		.post(`http://localhost:8000/card-activities`, cardActivity)
+		.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/card-activities`, cardActivity)
 		.then((res) => {
 			return res.data;
 		});

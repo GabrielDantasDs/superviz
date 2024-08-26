@@ -22,7 +22,7 @@ const useFetchParticipant = () => {
 
 		if (name) {
 			axios
-				.post("http://localhost:8000/participants", { name: name })
+				.post("${process.env.NEXT_PUBLIC_BACKEND_API}/participants", { name: name })
 				.then((res) => {
 					dispatch(
 						setParticipant({ id: res.data.id.toString(), name: res.data.name, isHost: true, joined: false })
