@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import { useHTMLPin } from "@superviz/react-sdk";
-
 const Container = ({ children }: { children: React.ReactNode }) => {
 
 	return (

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Card as CardInterface, Tag } from "../interfaces/types";
-import { FormElements } from "@superviz/react-sdk";
+
 import Cards from "./Cards";
 import { Draggable } from "@hello-pangea/dnd";
 import ModalCard from "./ModalCard";
@@ -41,12 +41,6 @@ const CardClosed: React.FC<CardInterface> = (data: CardInterface) => {
 
 	return (
 		<>
-			{data.tasks.length > 0 ? (
-				<FormElements
-					fields={data.tasks.map((task) => `task-${task.id}`)}
-				/>
-			) : null}
-
 					<div
 						className="bg-white shadow-lg rounded-lg overflow-hidden mb-4"
 					>

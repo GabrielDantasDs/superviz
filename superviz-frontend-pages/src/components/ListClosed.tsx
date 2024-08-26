@@ -1,30 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { List as ListInterface } from "../interfaces/types";
-import {
-	DragDropContext,
-	Draggable,
-	Droppable,
-	OnDragEndResponder,
-} from "@hello-pangea/dnd";
 import { useDispatch } from "react-redux";
-import { addCardToList, removeList } from "@/redux/listsSlice";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
-import Header from "./Header";
-
-import axios from "axios";
-import EdiText from "react-editext";
-import { renameList } from "@/api/lists";
 import dynamic from "next/dynamic";
-import { renameList as renameListAction } from "@/redux/listsSlice";
-import { setUpdateList } from "@/redux/updateListSlice";
-import { removeList as removeListReq } from "@/api/lists";
-import axiosInstance from "@/axiosInstance";
-import CardClosed from "./CardClosed";
-
-const Card = dynamic(import("@/components/Card"));
+const CardClosed = dynamic(import("@/components/CardClosed"));
 
 interface ListProps {
 	data: ListInterface;
@@ -32,7 +14,6 @@ interface ListProps {
 
 export default function ListClosed({ data }: ListProps) {
 	const dispatch = useDispatch();
-	const project = useSelector((state: RootState) => state.project);
 
 	return (
 		<div

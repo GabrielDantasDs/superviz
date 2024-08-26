@@ -117,7 +117,6 @@ export default function ClosedSprint() {
 		window.location.href = "/join-sprint";
 	};
 
-
 	return (
 		<>
 			{loading ? (

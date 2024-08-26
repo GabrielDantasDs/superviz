@@ -1,8 +1,13 @@
+"use client"
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
+// import Navbar from "@/components/Navbar";
+import dynamic from 'next/dynamic'
+
+const Navbar = dynamic(() => import('@/components/Navbar'), { ssr: false })
 
 export default function Home() {
 	const participant = useSelector((state: RootState) => state.participant);
