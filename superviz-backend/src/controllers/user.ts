@@ -66,7 +66,7 @@ export default class UserController {
 
 				const response = await this.userRepository.create(user);
 				if (response) {
-					return res.status(200).json(response);
+					return res.status(200).json({ ...response, company_code: company.code});
 				}
 			} else {
 				throw error("Invalid user infos");

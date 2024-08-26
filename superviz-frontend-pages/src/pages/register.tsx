@@ -28,11 +28,15 @@ export default function Register() {
 
 				localStorage.setItem("token", res.jwt_token);
 				localStorage.setItem("user", JSON.stringify({ id: res.id, name: res.name, email: res.email, id_company: res.id_company}));
+				Swal.fire("Save this code", "This is you company code " + res.company_code, "success");
 
-				router.push("/home");
+				setTimeout(() => {
+					router.push("/home");
+				}, 10000)
+
 			});
 		} else {
-			Swal.fire("Ops", "Enter company name or code", "error");
+
 			return;
 		}
 
