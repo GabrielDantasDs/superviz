@@ -20,7 +20,7 @@ export default function ModalProject({
 
 	const handleSubmit = async () => {
 		await axiosInstance 
-			.post("${process.env.NEXT_PUBLIC_BACKEND_API}/projects", {
+			.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/projects`, {
 				name: name,
 			}).then(res => 	{
 				setName("");

@@ -32,7 +32,7 @@ export default function JoinSprint() {
 
 	async function fetchData() {
 		await axiosInstance
-			.get("${process.env.NEXT_PUBLIC_BACKEND_API}/sprints", {
+			.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/sprints`, {
 				headers: { "ngrok-skip-browser-warning": "1" },
 			})
 			.then((res) => {
@@ -46,7 +46,7 @@ export default function JoinSprint() {
 			});
 
 		await axiosInstance
-			.get("${process.env.NEXT_PUBLIC_BACKEND_API}/sprints/closed", {
+			.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/sprints/closed`, {
 				headers: { "ngrok-skip-browser-warning": "1" },
 			})
 			.then((res) => {

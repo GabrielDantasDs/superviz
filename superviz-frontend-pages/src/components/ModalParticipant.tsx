@@ -27,7 +27,7 @@ export default function ModalParticipant({
 
 	const handleSubmit = async () => {
 		await axiosInstance
-			.post("${process.env.NEXT_PUBLIC_BACKEND_API}/participants", {
+			.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/participants`, {
 				name: name,
 				email: email,
 				id_sprint: sprint.id,
