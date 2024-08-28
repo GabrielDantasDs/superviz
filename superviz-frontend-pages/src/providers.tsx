@@ -25,7 +25,7 @@ export function Providers({ children }: any, store: any) {
 
 	const onParticipantLocalJoined = (participant: any) => {
 		if (participant.hasOwnProperty("name")) {
-			Swal.fire("Sucesso", `Bem vindo ${participant.name}`, "success");
+			Swal.fire("Sucesso", `Welcome ${participant.name}`, "success");
 			dispatch(joinSprint());
 		}
 	};

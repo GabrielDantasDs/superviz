@@ -19,9 +19,7 @@ export default function Event() {
 	const dispatch = useDispatch();
 
 	const getData = (data: any) => {
-		console.log('aaaaaaaaaaaaa')
-		if (data.participantId !== `participant-${localStorage.getItem("id")}`) {
-			console.log(data.data)
+		if (data.participantId !== `participant-${participant.id}`) {
 			dispatch(setLists(data.data.lists.slice()));
 			dispatch(setCardActivity(data.data.cards_activities.slice()));
 		}
