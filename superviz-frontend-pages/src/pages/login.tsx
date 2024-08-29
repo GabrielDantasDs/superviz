@@ -24,6 +24,7 @@ export default function Login() {
 		if (user && user.password!) {
 			await loginReq(user.email, user.password).then((res) => {
 				dispatch(setUserAction({id: res.id, email: res.email, name: res.name, id_company: res.id_company}));
+				dispatch(setParticipant({id: res.id, name: res.name, joined: true, isHost:true }));
 
 				localStorage.setItem("token", res.jwt_token);
 				localStorage.setItem("user", JSON.stringify({ id: res.id, name: res.name, email: res.email, id_company: res.id_company}));
