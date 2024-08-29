@@ -3,14 +3,15 @@ import { setLists } from "@/redux/listsSlice";
 import { RootState } from "@/redux/store";
 import { setUpdateCardsActivities } from "@/redux/updateCardsActivitiesSlice";
 import { setUpdateList } from "@/redux/updateListSlice";
-import { Realtime, useRealtime } from "@superviz/react-sdk";
+import { useRealtime } from "@superviz/react-sdk";
+
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 
 export default function Event() {
-	const { subscribe, unsubscribe, publish, fetchHistory } = useRealtime();
+	const { subscribe, unsubscribe, publish, fetchHistory, isReady } = useRealtime();
 	const updateList = useSelector((state: RootState) => state.updateList);
 	const participant = useSelector((state: RootState) => state.participant);
 	const updateCardsActivities = useSelector((state: RootState) => state.updateCardsActivities)
@@ -29,15 +30,18 @@ export default function Event() {
 	};
 	
 	useEffect(() => {
-		subscribe("my.event", getData);
-	}, []);
+		if (isReady) {
+		  subscribe("evento", getData);
+		}
+	  }, [isReady]);
 
 	useEffect(() => {
 		sendData();
 	}, [updateList, updateCardsActivities]);
 
 	const sendData = () => {
-		publish("my.event", {lists:lists, cards_activities: cards_activities});
+		console.log("pub")
+		publish("evento", {lists:lists, cards_activities: cards_activities});
 	};
 
 
